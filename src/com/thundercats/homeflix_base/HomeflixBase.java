@@ -38,20 +38,10 @@ public class HomeflixBase {
 	public static JTextArea textArea;
 	public static void main(String[] args){
 		
-		
+		/*
 		RegistryListener listener = new DeviceListener();
 		
 		UpnpService upnpService = new UpnpServiceImpl(listener);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		try {
 			upnpService.getRegistry().addDevice(createDevice());
@@ -61,7 +51,7 @@ public class HomeflixBase {
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
@@ -81,7 +71,7 @@ public class HomeflixBase {
 		System.out.println(msg);
 		textArea.append(msg + "\n");
 	}
-	
+	/*
 	public static LocalDevice createDevice() throws ValidationException{
 		DeviceIdentity identity =
 	            new DeviceIdentity(
@@ -151,6 +141,6 @@ public class HomeflixBase {
 			e1.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 	
 }
