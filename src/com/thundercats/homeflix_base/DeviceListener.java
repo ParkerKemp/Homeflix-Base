@@ -1,4 +1,5 @@
 package com.thundercats.homeflix_base;
+
 import org.teleal.cling.model.meta.LocalDevice;
 import org.teleal.cling.model.meta.RemoteDevice;
 import org.teleal.cling.registry.Registry;

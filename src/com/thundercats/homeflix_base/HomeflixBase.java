@@ -1,4 +1,6 @@
 package com.thundercats.homeflix_base;
+
+import java.io.File;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -34,6 +36,8 @@ import org.teleal.cling.model.types.UDN;
 import org.teleal.cling.registry.RegistrationException;
 import org.teleal.cling.registry.RegistryListener;
 
+import com.xuggle.xuggler.video.AConverter;
+
 public class HomeflixBase {
 	public static JTextArea textArea;
 	public static void main(String[] args){
@@ -53,13 +57,20 @@ public class HomeflixBase {
 			e.printStackTrace();
 		}*/
 		
+		//AConverter conv;
+		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
 		
 		textArea.setEditable(false);
 		
-		frame.add(textArea);
-		
+		//frame.add(textArea);
+		try {
+			frame.add(new MediaPanel(new File("/Users/iamparker/Desktop/Movies/test.MOV").toURI().toURL()));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		frame.setSize(400,400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
