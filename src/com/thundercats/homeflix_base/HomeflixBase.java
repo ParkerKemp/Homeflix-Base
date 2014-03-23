@@ -58,6 +58,11 @@ public class HomeflixBase {
 		}*/
 		
 		//AConverter conv;
+		//Transcoder coder = new Transcoder();
+		
+		DecodeAndPlayVideo vid = new DecodeAndPlayVideo("/Users/iamparker/Desktop/Movies/TheDeparted/departed.mp4");
+		
+		System.out.println("Done with transcoder.");
 		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
@@ -65,12 +70,12 @@ public class HomeflixBase {
 		textArea.setEditable(false);
 		
 		//frame.add(textArea);
-		try {
+		/*try {
 			frame.add(new MediaPanel(new File("/Users/iamparker/Desktop/Movies/test.MOV").toURI().toURL()));
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		frame.setSize(400,400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

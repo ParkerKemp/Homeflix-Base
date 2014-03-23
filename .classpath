@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="external-jars/jmf/mediaplayer.jar"/>
 	<classpathentry kind="lib" path="external-jars/jmf/multiplayer.jar"/>
 	<classpathentry kind="lib" path="external-jars/xuggler/xuggle-xuggler-5.4.jar"/>
+	<classpathentry kind="lib" path="external-jars/xuggler/slf4j-api-1.7.6.jar"/>
+	<classpathentry kind="lib" path="external-jars/xuggler/slf4j-simple-1.7.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
