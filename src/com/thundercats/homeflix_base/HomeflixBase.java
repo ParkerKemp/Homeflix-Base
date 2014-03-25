@@ -60,7 +60,7 @@ public class HomeflixBase {
 		//AConverter conv;
 		//Transcoder coder = new Transcoder();
 		
-		DecodeAndPlayVideo vid = new DecodeAndPlayVideo("/Users/iamparker/Desktop/Movies/TheDeparted/departed.mp4");
+		//DecodeAndPlayVideo vid = new DecodeAndPlayVideo("/Users/iamparker/Desktop/Movies/TheDeparted/departed.mp4");
 		
 		System.out.println("Done with transcoder.");
 		
@@ -69,7 +69,7 @@ public class HomeflixBase {
 		
 		textArea.setEditable(false);
 		
-		//frame.add(textArea);
+		frame.add(textArea);
 		/*try {
 			frame.add(new MediaPanel(new File("/Users/iamparker/Desktop/Movies/test.MOV").toURI().toURL()));
 		} catch (MalformedURLException e) {
@@ -79,6 +79,8 @@ public class HomeflixBase {
 		frame.setSize(400,400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		
+		echo("IP address: " + getLocalAddress().getHostAddress());
 		
 		new Thread(null, new ServerThread(6000), "Server-Thread").start();
 	}
@@ -134,7 +136,7 @@ public class HomeflixBase {
 
 	    return new LocalDevice(identity, type, details, switchPowerService);
 
-	}
+	}*/
 	
 	public static InetAddress getLocalAddress(){
 		try {
@@ -157,6 +159,6 @@ public class HomeflixBase {
 			e1.printStackTrace();
 		}
 		return null;
-	}*/
+	}
 	
 }
