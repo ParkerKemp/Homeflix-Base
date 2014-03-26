@@ -10,6 +10,7 @@ import java.net.SocketException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -62,7 +63,7 @@ public class HomeflixBase {
 		
 		//DecodeAndPlayVideo vid = new DecodeAndPlayVideo("/Users/iamparker/Desktop/Movies/TheDeparted/departed.mp4");
 		
-		System.out.println("Done with transcoder.");
+		//System.out.println("Done with transcoder.");
 		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
@@ -80,9 +81,21 @@ public class HomeflixBase {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		
-		echo("IP address: " + getLocalAddress().getHostAddress());
+		showAddresses();
+		
 		
 		new Thread(null, new ServerThread(6000), "Server-Thread").start();
+	}
+	
+	public static void showAddresses(){
+		ArrayList<InetAddress> addresses = getLocalAddresses();
+		if(addresses.size() == 0)
+			echo("No IPv4 addresses found!");
+		else
+			echo("Possible IP addresses: ");
+		for(int i = 0; i < addresses.size(); i++)
+			echo(addresses.get(i).getHostAddress());
+		echo("");
 	}
 	
 	public static void echo(String msg){
@@ -138,7 +151,8 @@ public class HomeflixBase {
 
 	}*/
 	
-	public static InetAddress getLocalAddress(){
+	public static ArrayList<InetAddress> getLocalAddresses(){
+		ArrayList<InetAddress> inet4Addresses = new ArrayList<InetAddress>();
 		try {
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()){
@@ -151,14 +165,15 @@ public class HomeflixBase {
 			        if(current_addr.isLoopbackAddress())
 			        	continue;
 			        if(current_addr instanceof Inet4Address)
-			        	return current_addr;
+			        	inet4Addresses.add(current_addr);
+			        	//return current_addr;
 			    }
 			}
 		} catch (SocketException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		return null;
+		return inet4Addresses;
 	}
 	
 }
