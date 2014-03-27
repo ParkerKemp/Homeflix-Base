@@ -24,13 +24,13 @@ public class ServerThread implements Runnable{
         	//creating a server socket - 1st parameter is port number and 2nd is the backlog
             s = new ServerSocket(port);
             //Wait for an incoming connection
-            HomeflixBase.echo("Server socket created. Waiting for connection...");
+            HomeflixBase.echo("Server socket created. Listening on port " + port + "...\n");
             while(true){
                 //get the connection socket
                 conn = s.accept();
                  
                 //print the hostname and port number of the connection
-                HomeflixBase.echo("Connection received from " + conn.getInetAddress().getHostName() + " : " + conn.getPort());
+                HomeflixBase.echo("Connection received from " + conn.getInetAddress().getHostName() + " : " + conn.getPort() + "\n");
                 
                 //create new thread to handle client
                 new client_handler(conn).start();
@@ -60,7 +60,7 @@ class client_handler extends Thread{
     }
  
     public void run(){
-        String line , input = "";
+        String line;
          
         try{
             //get socket writing and reading streams
@@ -69,14 +69,21 @@ class client_handler extends Thread{
             PrintStream out = new PrintStream(conn.getOutputStream());
  
             //Send welcome message to client
-            out.println("Welcome to the Server");
-            HomeflixBase.echo("Welcome");
+            out.println("Server: Welcome to the Server!");
+            HomeflixBase.echo("Server: Welcome to the Server!");
  
+            LocalVideoPlayer player; 
             //Now start reading input from client
             while((line = in.readLine()) != null && !line.equals(".")){
-            	HomeflixBase.echo(line);
-                //reply with the same message, adding some text
-                out.println("Server received: " + line);
+            	HomeflixBase.echo("Client: " + line);
+            	if(line.split(" ")[0].equalsIgnoreCase("play")){
+            		HomeflixBase.echo("\nTrying to play " + line.split(" ")[1] + " in same directory as Homeflix-Base.jar...\n");
+            		new Thread(new LocalVideoPlayer(System.getProperty("user.dir") + File.separator + line.split(" ")[1])).start();
+            	}else{
+            	//reply with the same message, adding some text
+            	out.println("Server received: " + line);
+                
+                }
             }
             
             HomeflixBase.echo("Done listening");

@@ -2,6 +2,8 @@ package com.thundercats.homeflix_base;
 
 import java.awt.image.BufferedImage;
 
+import javax.swing.JFrame;
+
 import com.xuggle.xuggler.Global;
 import com.xuggle.xuggler.IContainer;
 import com.xuggle.xuggler.IPacket;
@@ -12,14 +14,19 @@ import com.xuggle.xuggler.ICodec;
 import com.xuggle.xuggler.IVideoPicture;
 import com.xuggle.xuggler.IVideoResampler;
 import com.xuggle.xuggler.Utils;
-import com.xuggle.xuggler.demos.VideoImage;
+import com.thundercats.homeflix_base.VideoImage;
 
-public class LocalVideoPlayer{
+public class LocalVideoPlayer implements Runnable{
 	
 	private static VideoImage screen = null;
+	String filename;
 	
 	public LocalVideoPlayer(String filename){
-
+		this.filename = filename;
+	}
+	
+	@Override
+	public void run(){
     IContainer container = IContainer.make();
 
     if (container.open(filename, IContainer.Type.READ, null) < 0)
@@ -54,7 +61,7 @@ public class LocalVideoPlayer{
     }
     
     screen = new VideoImage();
-
+    
     IPacket packet = IPacket.make();
     long firstTimeStamp = Global.NO_PTS;
     long startTime = 0;
@@ -118,7 +125,7 @@ public class LocalVideoPlayer{
     		container.close();
     		container = null;
     	}
-    	System.exit(0);
+    	//System.exit(0);
 
 	}
 

@@ -2,13 +2,13 @@ package com.thundercats.homeflix_base;
 
 import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.IMediaViewer;
-import com.xuggle.mediatool.IMediaWriter;
+//import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 
 public class Transcoder{
 
     private static final String inputFilename = "/Users/iamparker/Desktop/Movies/test.MOV";
-    private static final String outputFilename = "/Users/iamparker/Desktop/Movies/TheDeparted/departed.avi";
+   // private static final String outputFilename = "/Users/iamparker/Desktop/Movies/TheDeparted/departed.avi";
 
     public Transcoder() {
 
@@ -25,8 +25,8 @@ public class Transcoder{
         System.out.println("Getting output file.");
         
         // create a media writer
-        IMediaWriter mediaWriter = 
-               ToolFactory.makeWriter(outputFilename, mediaReader);
+        //IMediaWriter mediaWriter = 
+          //     ToolFactory.makeWriter(outputFilename, mediaReader);
         
         System.out.println("Adding media writer as listener.");
 
