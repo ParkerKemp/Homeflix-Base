@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import com.xuggle.xuggler.Global;
 import com.xuggle.xuggler.IContainer;
+import com.xuggle.xuggler.IMediaData;
 import com.xuggle.xuggler.IPacket;
 import com.xuggle.xuggler.IPixelFormat;
 import com.xuggle.xuggler.IStream;
@@ -25,6 +26,7 @@ public class LocalVideoPlayer implements Runnable{
 		this.filename = filename;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public void run(){
     IContainer container = IContainer.make();
@@ -54,6 +56,8 @@ public class LocalVideoPlayer implements Runnable{
     	throw new RuntimeException("Could not open video decoder for container: " + filename);
 
     IVideoResampler resampler = null;
+    videoCoder.setCodec(ICodec.ID.CODEC_ID_H264);
+    Logger.log(videoCoder.getCodec().getName());
     if(videoCoder.getPixelType() != IPixelFormat.Type.BGR24){
     	resampler = IVideoResampler.make(videoCoder.getWidth(), videoCoder.getHeight(), IPixelFormat.Type.BGR24, videoCoder.getWidth(), videoCoder.getHeight(), videoCoder.getPixelType());
     	if(resampler == null)
@@ -66,11 +70,28 @@ public class LocalVideoPlayer implements Runnable{
     long firstTimeStamp = Global.NO_PTS;
     long startTime = 0;
     
+    //IStreamCoder decoder = IStreamCoder.make(IStreamCoder.Direction.DECODING);
+    //IStreamCoder encoder = IStreamCoder.make(IStreamCoder.Direction.ENCODING);
+    //encoder.setCodec(ICodec.findDecodingCodec(ICodec.ID.CODEC_ID_H264));
+    //encoder.open();
+    //container.readNextPacket(packet);
+    //encoder.setTimeBase(packet.getTimeBase());
+    //encoder.setPixelType(IPixelFormat.Type.BGR24);
+    //encoder.setChannels(1);
+    //encoder.setBitRate
+    
     while(container.readNextPacket(packet) >= 0){
+    	
     	if (packet.getStreamIndex() == streamId){
     		IVideoPicture picture = IVideoPicture.make(videoCoder.getPixelType(), videoCoder.getWidth(), videoCoder.getHeight());
 
     		int offset = 0;
+    		
+    		//decoder.decodeVideo(picture, packet, 0);
+    		//encoder.encodeVideo(packet, picture, -1);
+    		
+    		//Logger.log(packet.getDts());
+    		//Logger.log(packet.getTimeBase());
     		
     		while(offset < packet.getSize()){
     			int decodedData = videoCoder.decodeVideo(picture, packet, offset);
@@ -94,6 +115,7 @@ public class LocalVideoPlayer implements Runnable{
     					long currentTime = System.currentTimeMillis();
     					long timeSinceStartofVideo = currentTime - startTime;
     					long streamTimeSinceStartOfVideo = (picture.getTimeStamp() - firstTimeStamp)/1000;
+    					//System.out.println(picture.getTimeStamp() / 1000.0);
     					final long tolerance = 50;
     					final long millisecondsToSleep = (streamTimeSinceStartOfVideo - (timeSinceStartofVideo + tolerance));
     					if(millisecondsToSleep > 0){

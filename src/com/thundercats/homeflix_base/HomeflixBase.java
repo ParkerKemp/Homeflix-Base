@@ -1,9 +1,15 @@
 package com.thundercats.homeflix_base;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -12,16 +18,22 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
+import com.xuggle.xuggler.Converter;
+
 public class HomeflixBase {
+	
+	private static final int port = 2463;
+	private static final int rtspPort = 2464;
 	public static JTextArea textArea;
 	public static void main(String[] args){
+		Logger.setLogFile("log.txt");
 		
-		//new Thread(new LocalVideoPlayer(System.getProperty("user.dir") + "test.MOV");
-		//new Thread(new LocalVideoPlayer("/Users/iamparker/Desktop/Movies/TheDeparted/departed.mp4")).start();
-		//System.out.println(System.getProperty("user.dir") +"test.MOV");
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
-		//echo("Working directory: " + System.getProperty("user.dir") + "/test.MOV");
+		VLCStream.loadNative();
+		new Thread(new CheckOwnIP()).start();
+		
+		//new Thread(new VLCStream("/Users/iamparker/Desktop/Movies/manfromearth.mp4", "172.31.77.246", 2464)).start();
 		
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		
@@ -42,9 +54,8 @@ public class HomeflixBase {
         HomeflixBase.showAddresses();
         
 		showInstructions();
-		//showAddresses();
 		
-		new Thread(null, new ServerThread(6000), "Server-Thread").start();
+		new Thread(null, new ServerThread(port), "Server-Thread").start();
 	}
 	
 	public static void showAddresses(){
@@ -72,16 +83,25 @@ public class HomeflixBase {
 		try {
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()){
+				echo("Checking next interface...");
 			    NetworkInterface current = interfaces.nextElement();
 			    //System.out.println(current);
-			    if (!current.isUp() || current.isLoopback() || current.isVirtual()) continue;
+			    if (!current.isUp() || current.isLoopback() || current.isVirtual()){
+			    	echo("Network interface is down, or is a loopback interface or virtual interface. Skipping.");
+			    	continue;
+			    }
 			    Enumeration<InetAddress> addresses = current.getInetAddresses();
 			    while (addresses.hasMoreElements()){
+			    	echo("Checking next address...");
 			        InetAddress current_addr = addresses.nextElement();
-			        if(current_addr.isLoopbackAddress())
+			        if(current_addr.isLoopbackAddress()){
+			        	echo("Skipping loopback address.");
 			        	continue;
-			        if(current_addr instanceof Inet4Address)
+			        }
+			        if(current_addr instanceof Inet4Address){
+			        	echo("Found a valid address at " + current_addr.getHostAddress());
 			        	inet4Addresses.add(current_addr);
+			        }
 			        	//return current_addr;
 			    }
 			}
@@ -89,6 +109,7 @@ public class HomeflixBase {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		echo("");
 		return inet4Addresses;
 	}
 	
