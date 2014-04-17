@@ -18,6 +18,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
+import uk.co.caprica.vlcj.player.manager.MediaManager;
+
 import com.xuggle.xuggler.Converter;
 
 public class HomeflixBase {
@@ -25,15 +27,27 @@ public class HomeflixBase {
 	private static final int port = 2463;
 	private static final int rtspPort = 2464;
 	public static JTextArea textArea;
+	MediaManager manager;
+	
 	public static void main(String[] args){
 		Logger.setLogFile("log.txt");
 		
+		String[] files = {"/Users/iamparker/Desktop/Movies/manfromearth.mp4"};
+		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
+		
+		//try {
+		//	Process process = Runtime.getRuntime().exec("cd external-jars/MacOS;./vlc --ttl 12 -vvv --color -I telnet --telnet-port 2465 --telnet-password videolan --rtsp-port 2464");
+		//} catch (IOException e) {
+			// TODO Auto-generated catch block
+		//	e.printStackTrace();
+		//}
+		
 		VLCStream.loadNative();
 		new Thread(new CheckOwnIP()).start();
 		
-		//new Thread(new VLCStream("/Users/iamparker/Desktop/Movies/manfromearth.mp4", "172.31.77.246", 2464)).start();
+		//new Thread(new VLCStream("/Users/iamparker/Desktop/Movies/manfromearth.mp4", "172.31.77.246", rtspPort)).start();
 		
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		

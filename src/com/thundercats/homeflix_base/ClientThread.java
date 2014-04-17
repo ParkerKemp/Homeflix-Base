@@ -91,7 +91,7 @@ public class ClientThread extends Thread{
     	
     	if(command.equalsIgnoreCase("play") && tokens.length > 1){
     		String filename = tokens[1];
-    		//HomeflixBase.echo("\nTrying to play " + filename + " in same directory as Homeflix-Base.jar...\n");
+    		
     		new Thread(new VLCStream(filename, connectingIP, 2464)).start();
     		return true;
     	}
