@@ -47,6 +47,8 @@ public class HomeflixBase {
 		VLCStream.loadNative();
 		new Thread(new CheckOwnIP()).start();
 		
+		new Thread(new Llamabrarian()).start();
+		
 		//new Thread(new VLCStream("/Users/iamparker/Desktop/Movies/manfromearth.mp4", "172.31.77.246", rtspPort)).start();
 		
 		JScrollPane scrollPane = new JScrollPane(textArea);
