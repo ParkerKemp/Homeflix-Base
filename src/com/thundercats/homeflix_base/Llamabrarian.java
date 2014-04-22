@@ -17,6 +17,8 @@ import java.util.List;
 
 public class Llamabrarian implements Runnable{
 	
+	public static Path dir = Paths.get("/Users/iamparker/Desktop/Homeflix-vids");
+	
 	public Llamabrarian(){
 		
 	}
@@ -24,16 +26,16 @@ public class Llamabrarian implements Runnable{
 	@Override
 	public void run() 
 	{
-		Path myDir = Paths.get(System.getProperty("user.dir"));
-		String myDirS = ".";
+		//Path myDir = Paths.get("/Users/iamparker/Desktop/Homeflix-vids");//System.getProperty("user.dir"));
+		//String myDirS = ".";
 		//define a folder root
-		testForDirectoryChange(myDir, myDirS);
+		testForDirectoryChange(dir);//, myDirS);
 		//System.out.println(videoList(myDirS));
 	}
 	
-	public static void testForDirectoryChange(Path myDir, String myDirS){
+	public static void testForDirectoryChange(Path myDir){//, String myDirS){
 		String[] videoNames;
-
+		System.out.println(myDir.toString());
         try {
            WatchService watcher = myDir.getFileSystem().newWatchService();
            myDir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE,
@@ -51,7 +53,7 @@ public class Llamabrarian implements Runnable{
                     System.out.println("Delete: " + event.context().toString());
                     
                     //test code
-                    videoNames = videoList(myDirS);
+                    videoNames = videoList();//myDir.toString());
                     for (int i = 0; i < videoNames.length; i++){
                     	System.out.println(videoNames[i]);
                     }
@@ -71,12 +73,12 @@ public class Llamabrarian implements Runnable{
 
 
 	//Get list of video files in directory and pass as String[]
-	public static String[] videoList(String myDirS) 
+	public static String[] videoList()//String myDirS) 
 	{
-		myDirS = ".";//debug
+		//myDirS = ".";//debug
 		String files;
 		int j = 0;
-	    File folder = new File(myDirS);
+	    File folder = new File(dir.toString());
 	    File[] listOfFiles = folder.listFiles();
 	    
 	    //System.out.println(listOfFiles.length);

@@ -48,27 +48,9 @@ public class ClientThread extends Thread{
             //LocalVideoPlayer player; 
             //Now start reading input from client
             while((line = in.readLine()) != null && !line.equals(".")){
-            	parseRequest(line);
-            	
-            	//parsedSentence = line.split(" ", 2);
-            	//connectingIP = parsedSentence[0];
-            	//line = parsedSentence[1];
             	HomeflixBase.echo("Client: " + line);
-            	//if(line.length() == 0)
-            	//	continue;
-            	//if(line.charAt(0) == 'O' || line.charAt(0) == 'S' || line.charAt(0) == 'D' || line.charAt(0) == 'T' || line.charAt(0) == 'P')
-            	//	parseRTSPRequest(line);
-            	
-            	//if(line.split(" ")[0].equalsIgnoreCase("play")){
-            	//	HomeflixBase.echo("\nTrying to play " + line.split(" ")[1] + " in same directory as Homeflix-Base.jar...\n");
-            		//new Thread(new LocalVideoPlayer(System.getProperty("user.dir") + File.separator + line.split(" ")[1])).start();
-            	//	new Thread(new VLCStream(line.split(" ")[1], connectingIP, 2464)).start();
-            	//}else{
-            	
-            	//reply with the same message, adding some text
-            	//out.println("Server received: " + line);
-                
-               // }
+            	parseRequest(line);
+
             }
             
             HomeflixBase.echo("Connection closed.");
@@ -85,18 +67,6 @@ public class ClientThread extends Thread{
     
     public boolean parseRequest(String line){
     	//Return true if a command was processed, or false if it's just arbitrary text data
-    	
-       // String connectingIP;
-       // String [] parsedSentence;
-        
-       // parsedSentence = line.split(" ", 2);
-    	//connectingIP = parsedSentence[0];
-    	
-    	//line = parsedSentence[1];
-
-    	//if(line.length() == 0)
-    	//	return;
-    	
     	String[] tokens = line.split(" ");
     	String command = tokens[0];
     	
@@ -104,8 +74,8 @@ public class ClientThread extends Thread{
     	if(command.equalsIgnoreCase("play") && tokens.length > 1){
     		String filename = tokens[1];
     		HomeflixBase.echo("Trying to play " + filename);
-    		new Thread(new VLCStream(filename)).start();
-    		//new Thread(new VLCStream(filename, connectingIP, 2464)).start();
+    		new VLCStream(filename).init();
+    		out.println("READY " + filename);
     		return true;
     	}
     	
@@ -118,79 +88,16 @@ public class ClientThread extends Thread{
     	return false;
     }
     
-    public void parseRTSPRequest(String request){
-    	String directive = firstWord(request);
-    	if(directive.equals("OPTIONS"))
-    		handleOptionsRequest(request);
-    	else if(directive.equals("DESCRIBE"))
-    		handleDescribeRequest(request);
-    	//else if(request.split(" ")[0].equals())
-    }
-    
-    public String firstWord(String line){
-    	return line.split(" ")[0];
-    }
-    
     public void updateMobile(){
     	//HomeflixBase.echo("Ground Control receives");
 		//Tell Mobile how many files there are
-    	String[] myFileNames = Llamabrarian.videoList(".");
-		out.println("FILE" + myFileNames.length);
+    	String[] myFileNames = Llamabrarian.videoList();//".");
+		out.println("FILE " + myFileNames.length);
 		//Then one by one, name each file
 		//later, may send other file info with it
 		for(int i=0; i<myFileNames.length; i++)
 		{
-            out.println("FILE" + myFileNames[i]);
+            out.println("FILE " + myFileNames[i]);
         }
-    }
-    
-    public void handleOptionsRequest(String request){
-    	send("RTSP/1.0 200 OK\r\n"
-    			+ "CSeq: 0\r\n"
-    			+ "Public: PLAY, SETUP, TEARDOWN, PLAY, PAUSE\r\n");
-    }
-    
-    public void handleDescribeRequest(String request){
-    	int cseq = 1;
-    	
-    	String sdpString = /*"v=0\r\n"
-    			+ "o=pk 1234567 2345678 IN IP4 " + externalIP + "\r\n"
-    			+ "s=\r\n"
-    			+ "t=0 0\r\n"
-    			+ "m=video 0 RTP/AVP 26\r\n"
-    			+ "a=control:trackID=0\r\n"
-    			+ "c=IN IP4 " + conn.getRemoteSocketAddress() + "\r\n";*/
-    	
-    	"v=0\r\n"
-    	//+ "o=- 819959427 819959427 IN IP4 " + externalIP + "\r\n"
-    	//+ "s=BigBuckBunny_115k.mov\r\n"
-    	//+ "c=IN IP4" + conn.getRemoteSocketAddress() + "\r\n"
-    	//+ "t=0 0\r\n"
-    	//+ "a=sdplang:en\r\n"
-    	//+ "a=range:npt=0- 596.48\r\n"
-    	//+ "a=control:*\r\n"
-    	//+ "m=audio 0 RTP/AVP 96\r\n"
-    	//+ "a=rtpmap:96 mpeg4-generic/12000/2\r\n"
-    	//+ "a=fmtp:96 profile-level-id=1;mode=AAC-hbr;sizelength=13;indexlength=3;indexdeltalength=3;config=1490\r\n"
-    	//+ "a=control:trackID=1\r\n"
-    	+ "m=video 0 RTP/AVP 97\r\n"
-    	+ "a=rtpmap:97 H264/90000\r\n"
-    	+ "a=fmtp:97 packetization-mode=1;profile-level-id=42C01E;sprop-parameter-sets=Z0LAHtkDxWhAAAADAEAAAAwDxYuS,aMuMsg==\r\n"
-    	//+ "a=cliprect:0,0,160,240\r\n"
-    	//+ "a=framesize:97 240-160\r\n"
-    	//+ "a=framerate:24.0\r\n"
-    	+ "a=control:trackID=2"
-    	+ "\r\n\r\n";
-    	
-    	send("RTSP/1.0 200 OK\r\n"
-    			+ "CSeq: " + cseq + "\r\n"
-    			+ "Content-Type: application/sdp\r\n"
-    			+ "Content-Length: " + sdpString.length() + "\r\n\r\n"
-    			+ sdpString);
-    }
-    
-    public void send(String message){
-    	out.println(message);
-    	//HomeflixBase.echo(message);
     }
 }

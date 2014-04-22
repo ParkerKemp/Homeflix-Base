@@ -20,7 +20,7 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 import uk.co.caprica.vlcj.player.manager.MediaManager;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
-public class VLCStream implements Runnable{
+public class VLCStream{
 
 	private String filename;
 	
@@ -28,8 +28,7 @@ public class VLCStream implements Runnable{
 		this.filename = fileName;
 	}
 	
-	@Override
-	public void run(){
+	public void init(){
 		String recv;
 		loadNative();
 		
@@ -38,12 +37,12 @@ public class VLCStream implements Runnable{
 		telnet.connect(); //Hangs until a connection is made to telnet
 		telnet.send("videolan");
 		while(!(recv = telnet.receive()).equals("Welcome, Master"))
-			HomeflixBase.echo(telnet.receive());
+			HomeflixBase.echo(recv);
 		telnet.send("new " + filename + " vod disabled");
 		HomeflixBase.echo(telnet.receive());
-		telnet.send("setup " + filename + " output #transcode{vcodec=mp4v,acodec=mp4a}:gather");
+		telnet.send("setup " + filename + " output #transcode{fps=15,vcodec=mp4v,vb=500,scale=1,width=352,height=240,acodec=mp4a,ab=128,channels=2,samplerate=22050,deinterlace,audio-sync}:gather");
 		HomeflixBase.echo(telnet.receive());
-		telnet.send("setup " + filename + " input " + filename);//"/Users/iamparker/Desktop/Movies/django.avi");
+		telnet.send("setup " + filename + " input " + Llamabrarian.dir.toString() + "/" + filename);//"/Users/iamparker/Desktop/Movies/django.avi");
 		HomeflixBase.echo(telnet.receive());
 		telnet.send("setup " + filename + " option sout-keep");
 		HomeflixBase.echo(telnet.receive());
@@ -55,18 +54,6 @@ public class VLCStream implements Runnable{
 		HomeflixBase.echo(telnet.receive());
 		
 		HomeflixBase.echo("Ready to go!");
-	}
-
-	private String formatRtspStream(String serverAddress, int serverPort, String id) {
-		StringBuilder sb = new StringBuilder(60);
-		sb.append(":sout=#rtp{sdp=rtsp://@");
-		sb.append(serverAddress);
-		sb.append(':');
-		sb.append(serverPort);
-		sb.append('/');
-		sb.append(id);
-		sb.append("}");
-		return sb.toString();
 	}
 	
 	public static void launchStream(String filename){
