@@ -1,4 +1,9 @@
 *.class
 /bin
 test
+*.mov
 *.MOV
+*.avi
+*.AVI
+*.mp4
+*.MP4
