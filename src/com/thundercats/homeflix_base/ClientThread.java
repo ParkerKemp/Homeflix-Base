@@ -24,8 +24,6 @@ public class ClientThread extends Thread{
     private PrintStream out;
     private BufferedReader in;
     
-    public int fileCount;//how many video files to pass to Mobile
-    
     public String[] fileNames = new String[] {"Test1.MOV", "Test2.MOV", "test"};//file names to pass to Mobile. Test data used.
      
     ClientThread(Socket conn){
@@ -112,17 +110,7 @@ public class ClientThread extends Thread{
     	
     	//if message from Mobile is 'Request File List" then send formatted info to Mobile
     	if(command.equalsIgnoreCase("RequestFileList")){
-    		//HomeflixBase.echo("Ground COntrol receives");
-    		//Tell Mobile how many files there are
-    		fileCount = 3;//test code, assume 3 files
-    		out.println(fileCount);
-    		
-    		//Then one by one, name each file
-    		//later, may send other file info with it
-    		for(int i=0; i<fileCount; i++)
-    		{
-                out.println(fileNames[i]);
-            }
+    		updateMobile(fileNames);
     		return true;
     	}
     	
@@ -140,6 +128,19 @@ public class ClientThread extends Thread{
     
     public String firstWord(String line){
     	return line.split(" ")[0];
+    }
+    
+    public void updateMobile(String[] myFileNames){
+    	//HomeflixBase.echo("Ground Control receives");
+		//Tell Mobile how many files there are
+    	myFileNames = Llamabrarian.videoList(".");
+		out.println(myFileNames.length);//for test code, assume 3 files
+		//Then one by one, name each file
+		//later, may send other file info with it
+		for(int i=0; i<myFileNames.length; i++)
+		{
+            out.println(myFileNames[i]);
+        }
     }
     
     public void handleOptionsRequest(String request){
