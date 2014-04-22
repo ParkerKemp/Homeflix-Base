@@ -139,7 +139,7 @@ public class ClientThread extends Thread{
 		//later, may send other file info with it
 		for(int i=0; i<myFileNames.length; i++)
 		{
-            out.println("FILE" + myFileNames[i]);
+            out.println("FILE " + myFileNames[i]);
         }
     }
     

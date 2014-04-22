@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -80,6 +81,8 @@ public class HomeflixBase {
         
 		showInstructions();
 		
+		chooseDirectory();
+		
 		new Thread(null, new ServerThread(port), "Server-Thread").start();
 	}
 	
@@ -108,19 +111,19 @@ public class HomeflixBase {
 		try {
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()){
-				echo("Checking next interface...");
+				//echo("Checking next interface...");
 			    NetworkInterface current = interfaces.nextElement();
 			    //System.out.println(current);
 			    if (!current.isUp() || current.isLoopback() || current.isVirtual()){
-			    	echo("Network interface is down, or is a loopback interface or virtual interface. Skipping.");
+			    	//echo("Network interface is down, or is a loopback interface or virtual interface. Skipping.");
 			    	continue;
 			    }
 			    Enumeration<InetAddress> addresses = current.getInetAddresses();
 			    while (addresses.hasMoreElements()){
-			    	echo("Checking next address...");
+			    	//echo("Checking next address...");
 			        InetAddress current_addr = addresses.nextElement();
 			        if(current_addr.isLoopbackAddress()){
-			        	echo("Skipping loopback address.");
+			        	//echo("Skipping loopback address.");
 			        	continue;
 			        }
 			        if(current_addr instanceof Inet4Address){
@@ -136,6 +139,10 @@ public class HomeflixBase {
 		}
 		echo("");
 		return inet4Addresses;
+	}
+	
+	public static void chooseDirectory(){
+		echo("choose dir");
 	}
 	
 }
