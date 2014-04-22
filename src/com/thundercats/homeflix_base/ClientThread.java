@@ -106,7 +106,7 @@ public class ClientThread extends Thread{
     	if(command.equalsIgnoreCase("play") && tokens.length > 1){
     		String filename = tokens[1];
     		
-    		new Thread(new VLCStream(filename, connectingIP, 2464)).start();
+    		//new Thread(new VLCStream(filename, connectingIP, 2464)).start();
     		return true;
     	}
     	

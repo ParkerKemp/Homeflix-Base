@@ -2,3 +2,7 @@
 /bin
 test
 *.MOV
+log.err
+log.out
+log.log
+test3
