@@ -14,6 +14,10 @@ public class ClientThread extends Thread{
     private Socket conn;
     private PrintStream out;
     private BufferedReader in;
+    
+    public int fileCount;//how many video files to pass to Mobile
+    
+    public String[] fileNames = new String[] {"Test1.MOV", "Test2.MOV", "test"};//file names to pass to Mobile. Test data used.
      
     ClientThread(Socket conn){
         this.conn = conn;
@@ -89,10 +93,27 @@ public class ClientThread extends Thread{
     	String[] tokens = line.split(" ");
     	String command = tokens[0];
     	
+    	//if message from Mobile is "play x" then make a stream for that file
     	if(command.equalsIgnoreCase("play") && tokens.length > 1){
     		String filename = tokens[1];
     		
     		new Thread(new VLCStream(filename, connectingIP, 2464)).start();
+    		return true;
+    	}
+    	
+    	//if message from Mobile is 'Request File List" then send formatted info to Mobile
+    	if(command.equalsIgnoreCase("RequestFileList")){
+    		//HomeflixBase.echo("Ground COntrol receives");
+    		//Tell Mobile how many files there are
+    		fileCount = 3;//test code, assume 3 files
+    		out.println(fileCount);
+    		
+    		//Then one by one, name each file
+    		//later, may send other file info with it
+    		for(int i=0; i<fileCount; i++)
+    		{
+                out.println(fileNames[i]);
+            }
     		return true;
     	}
     	
