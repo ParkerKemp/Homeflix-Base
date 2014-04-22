@@ -30,20 +30,31 @@ public class VLCStream implements Runnable{
 	
 	@Override
 	public void run(){
+		String recv;
 		loadNative();
 		
 		TelnetRequest telnet = new TelnetRequest();
 		
 		telnet.connect(); //Hangs until a connection is made to telnet
-		
 		telnet.send("videolan");
+		while(!(recv = telnet.receive()).equals("Welcome, Master"))
+			HomeflixBase.echo(telnet.receive());
 		telnet.send("new " + filename + " vod disabled");
+		HomeflixBase.echo(telnet.receive());
 		telnet.send("setup " + filename + " output #transcode{vcodec=mp4v,acodec=mp4a}:gather");
-		telnet.send("setup " + filename + " input " + filename);///Users/iamparker/Desktop/Movies/django.avi");
+		HomeflixBase.echo(telnet.receive());
+		telnet.send("setup " + filename + " input " + filename);//"/Users/iamparker/Desktop/Movies/django.avi");
+		HomeflixBase.echo(telnet.receive());
 		telnet.send("setup " + filename + " option sout-keep");
+		HomeflixBase.echo(telnet.receive());
 		telnet.send("setup " + filename + " option no-sout-rtp-sap");
+		HomeflixBase.echo(telnet.receive());
 		telnet.send("setup " + filename + " option no-sout-standard-sap");
+		HomeflixBase.echo(telnet.receive());
 		telnet.send("setup " + filename + " enabled");
+		HomeflixBase.echo(telnet.receive());
+		
+		HomeflixBase.echo("Ready to go!");
 	}
 
 	private String formatRtspStream(String serverAddress, int serverPort, String id) {

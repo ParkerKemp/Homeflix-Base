@@ -87,7 +87,7 @@ public class Llamabrarian implements Runnable{
 	    for (int i = 0; i < listOfFiles.length; i++){
 	    	if (listOfFiles[i].isFile()) {
 	    		files = listOfFiles[i].getName();
-	    		if (files.endsWith(".mov") || files.endsWith(".MOV") || files.endsWith(".avi")){
+	    		if (files.endsWith(".mov") || files.endsWith(".MOV") || files.endsWith(".avi") || files.endsWith(".mp4")){
 	    			//System.out.println(files);//debug
 	    			vidFiles[j] = files;
 	    			j++;

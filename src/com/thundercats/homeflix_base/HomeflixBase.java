@@ -57,7 +57,7 @@ public class HomeflixBase {
 		//VLCStream.startTelnetServer();
 		new Thread(new VLCServer()).start();
 		
-		new Thread(new VLCStream("Test")).start();
+		//new Thread(new VLCStream("Test")).start();
 		//VLCStream.launchStream("Test");//"/Users/iamparker/Desktop/Movies/django.avi");
 		
 		new Thread(new CheckOwnIP()).start();

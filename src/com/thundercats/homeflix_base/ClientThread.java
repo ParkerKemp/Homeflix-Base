@@ -86,13 +86,13 @@ public class ClientThread extends Thread{
     public boolean parseRequest(String line){
     	//Return true if a command was processed, or false if it's just arbitrary text data
     	
-        String connectingIP;
-        String [] parsedSentence;
+       // String connectingIP;
+       // String [] parsedSentence;
         
-        parsedSentence = line.split(" ", 2);
-    	connectingIP = parsedSentence[0];
+       // parsedSentence = line.split(" ", 2);
+    	//connectingIP = parsedSentence[0];
     	
-    	line = parsedSentence[1];
+    	//line = parsedSentence[1];
 
     	//if(line.length() == 0)
     	//	return;
@@ -103,7 +103,8 @@ public class ClientThread extends Thread{
     	//if message from Mobile is "play x" then make a stream for that file
     	if(command.equalsIgnoreCase("play") && tokens.length > 1){
     		String filename = tokens[1];
-    		
+    		HomeflixBase.echo("Trying to play " + filename);
+    		new Thread(new VLCStream(filename)).start();
     		//new Thread(new VLCStream(filename, connectingIP, 2464)).start();
     		return true;
     	}
