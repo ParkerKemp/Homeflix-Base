@@ -24,8 +24,6 @@ public class ClientThread extends Thread{
     private PrintStream out;
     private BufferedReader in;
     
-    public int fileCount;//how many video files to pass to Mobile
-    
     public String[] fileNames = new String[] {"Test1.MOV", "Test2.MOV", "test"};//file names to pass to Mobile. Test data used.
      
     ClientThread(Socket conn){
@@ -112,14 +110,12 @@ public class ClientThread extends Thread{
     	
     	//if message from Mobile is 'Request File List" then send formatted info to Mobile
     	if(command.equalsIgnoreCase("RequestFileList")){
-    		//HomeflixBase.echo("Ground COntrol receives");
+    		//HomeflixBase.echo("Ground Control receives");
     		//Tell Mobile how many files there are
-    		fileCount = 3;//test code, assume 3 files
-    		out.println(fileCount);
-    		
+    		out.println(fileNames.length);//for test code, assume 3 files
     		//Then one by one, name each file
     		//later, may send other file info with it
-    		for(int i=0; i<fileCount; i++)
+    		for(int i=0; i<fileNames.length; i++)
     		{
                 out.println(fileNames[i]);
             }
