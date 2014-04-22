@@ -40,7 +40,7 @@ public class VLCStream{
 			HomeflixBase.echo(recv);
 		telnet.send("new " + filename + " vod disabled");
 		HomeflixBase.echo(telnet.receive());
-		telnet.send("setup " + filename + " output #transcode{fps=15,vcodec=mp4v,vb=500,scale=1,width=352,height=240,acodec=mp4a,ab=128,channels=2,samplerate=22050,deinterlace,audio-sync}:gather");
+		telnet.send("setup " + filename + " output #transcode{vcodec=mp4v,acodec=mp4a}:gather");
 		HomeflixBase.echo(telnet.receive());
 		telnet.send("setup " + filename + " input " + Llamabrarian.dir.toString() + "/" + filename);//"/Users/iamparker/Desktop/Movies/django.avi");
 		HomeflixBase.echo(telnet.receive());
