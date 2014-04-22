@@ -41,7 +41,7 @@ public class Llamabrarian implements Runnable{
 
            WatchKey watckKey = watcher.take();
 
-           while(true){
+           while(true){ //watch for events and print out the kind of event
            List<WatchEvent<?>> events = watckKey.pollEvents();
            for (WatchEvent event : events) {
                 if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
