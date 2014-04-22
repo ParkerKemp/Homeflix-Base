@@ -1,3 +1,12 @@
+/*Homeflix-Base: CheckOwnIP
+ * 
+ * Homeflix project for WKU CS496
+ * Richie Davidson, Parker Kemp, Colin Page
+ * Spring Semester 2014
+ * 
+ * Finds the user's IP address(es)
+ */
+
 package com.thundercats.homeflix_base;
 
 import java.io.BufferedReader;

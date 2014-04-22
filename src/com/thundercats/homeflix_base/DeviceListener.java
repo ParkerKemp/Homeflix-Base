@@ -1,3 +1,12 @@
+/*Homeflix-Base: DeviceListener
+ * 
+ * Homeflix project for WKU CS496
+ * Richie Davidson, Parker Kemp, Colin Page
+ * Spring Semester 2014
+ * 
+ * 
+ */
+
 package com.thundercats.homeflix_base;
 
 import org.teleal.cling.model.meta.LocalDevice;

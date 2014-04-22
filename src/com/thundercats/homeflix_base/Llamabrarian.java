@@ -1,4 +1,13 @@
-
+/*Homeflix-Base: Llamabrarian
+ * 
+ * Homeflix project for WKU CS496
+ * Richie Davidson, Parker Kemp, Colin Page
+ * Spring Semester 2014
+ * 
+ * Monitor a user-specified directory
+ * Curates database to reflect this
+ * Passes relevant info to ClientThread to update Mobile
+ */
 
 package com.thundercats.homeflix_base;
 import java.nio.file.*;
@@ -17,7 +26,6 @@ public class Llamabrarian implements Runnable{
 		Path myDir = Paths.get(System.getProperty("user.dir"));
 		//define a folder root
 		testForDirectoryChange(myDir);
-
 	}
 	
 	public static void testForDirectoryChange(Path myDir){

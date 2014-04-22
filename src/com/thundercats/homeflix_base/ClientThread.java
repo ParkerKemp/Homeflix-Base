@@ -1,3 +1,12 @@
+/*Homeflix-Base: ClientThread
+ * 
+ * Homeflix project for WKU CS496
+ * Richie Davidson, Parker Kemp, Colin Page
+ * Spring Semester 2014
+ * 
+ * Acts as client, receives messages from Mobile and interprets commands
+ */
+
 package com.thundercats.homeflix_base;
 
 import java.io.BufferedReader;
