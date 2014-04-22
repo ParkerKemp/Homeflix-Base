@@ -11,7 +11,6 @@
 
 package com.thundercats.homeflix_base;
 import java.io.File;
-import java.io.PrintStream;
 import java.nio.file.*;
 import java.util.List;
 
@@ -56,8 +55,6 @@ public class Llamabrarian implements Runnable{
                     for (int i = 0; i < videoNames.length; i++){
                     	System.out.println(videoNames[i]);
                     }
-                    
-                    //ClientThread.updateMobile(videoNames);
                     ///test code
                     
                 }
