@@ -1,6 +1,10 @@
 *.class
 /bin
 test
+log.err
+log.out
+log.log
+test3
 *.mov
 *.MOV
 *.avi
