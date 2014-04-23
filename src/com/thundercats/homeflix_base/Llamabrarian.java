@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Llamabrarian implements Runnable{
 	
-	public static Path dir = Paths.get("/Users/iamparker/Desktop/Homeflix-vids");
+	public static Path dir = Paths.get("C:\\Users\\Richie\\TestVids");
 	
 	public Llamabrarian(){
 		
