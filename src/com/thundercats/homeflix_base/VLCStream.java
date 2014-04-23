@@ -36,8 +36,8 @@ public class VLCStream{
 		
 		telnet.connect(); //Hangs until a connection is made to telnet
 		telnet.send("videolan");
-		while(!(recv = telnet.receive()).equals("Welcome, Master"))
-			HomeflixBase.echo(recv);
+		//while(!(recv = telnet.receive()).equals("Welcome, Master"))
+			HomeflixBase.echo(telnet.receive());
 		telnet.send("new " + filename + " vod disabled");
 		HomeflixBase.echo(telnet.receive());
 		telnet.send("setup " + filename + " output #transcode{vcodec=mp4v,acodec=mp4a}:gather");
