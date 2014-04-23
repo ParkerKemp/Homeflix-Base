@@ -20,6 +20,7 @@ public class ClientThread extends Thread{
 	
 	private final String externalIP = "172.31.95.94";
 	
+	VLCServer serverInstance = new VLCServer();
     private Socket conn;
     private PrintStream out;
     private BufferedReader in;
@@ -72,10 +73,10 @@ public class ClientThread extends Thread{
     	
     	//if message from Mobile is "play x" then make a stream for that file
     	if(command.equalsIgnoreCase("play") && tokens.length > 1){
-    		String filename = tokens[1];
+    		String filename = line.substring(5);
     		HomeflixBase.echo("Trying to play " + filename);
     		//new VLCStream(filename).init();
-    		new VLCServer().startVLCInstance(filename);
+    		serverInstance.startVLCInstance(filename);
     		out.println("READY " + filename);
     		return true;
     	}

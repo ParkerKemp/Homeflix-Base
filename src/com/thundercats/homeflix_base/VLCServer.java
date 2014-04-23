@@ -17,10 +17,15 @@ public class VLCServer{
 	
 	public void startVLCInstance(String filename){
 		
+		if(instance != null){
+			LibVlc.SYNC_INSTANCE.libvlc_release(instance);
+			instance = null;
+		}
+		
 		generateConfigFile(filename);
 		
 		//String[] libVlcArgs = {"-vvv", "--intf=rc", "--telnet-port=2465", "--telnet-password=videolan", "--rtsp-port=2464", "--sout-avcodec-strict=-2", "--rtsp-timeout=0"};
-		String[] libVlcArgs = {"-vvv", "--vlm-conf=vod.conf", "--rtsp-port=2464", "--sout-avcodec-strict=-2", "--rtsp-timeout=0"};
+		String[] libVlcArgs = {"-vvv", "--vlm-conf=vod.conf", "--rtsp-port=2464", "--sout-avcodec-strict=-2", "--rtsp-timeout=0"};//, "--packetizer=packetizer_mpeg4video"};
 	    
 		//LibVlc.SYNC_INSTANCE.libvlc_release(instance);
         instance = LibVlc.SYNC_INSTANCE.libvlc_new(5, libVlcArgs);
@@ -47,13 +52,15 @@ public class VLCServer{
 		try {
 			writer = new PrintWriter("vod.conf", "UTF-8");
 			
-			writer.println("new " + filename + " vod disabled");
-			writer.println("setup " + filename + " output #transcode{vcodec=mp4v,acodec=mp4a}:gather");
-			writer.println("setup " + filename + " input " + Llamabrarian.dir.toString() + "/" + filename);
-			writer.println("setup " + filename + " option sout-keep");
-			writer.println("setup " + filename + " option no-sout-rtp-sap");
-			writer.println("setup " + filename + " option no-sout-standard-sap");
-			writer.println("setup " + filename + " enabled");
+			String compliantName = filename.replace(' ','_');
+			
+			writer.println("new " + compliantName + " vod disabled");
+			writer.println("setup " + compliantName + " output #transcode{vcodec=h264,acodec=mp4a}:gather");
+			writer.println("setup " + compliantName + " input \"" + Llamabrarian.dir.toString() + "/" + filename + "\"");
+			writer.println("setup " + compliantName + " option sout-keep");
+			writer.println("setup " + compliantName + " option no-sout-rtp-sap");
+			writer.println("setup " + compliantName + " option no-sout-standard-sap");
+			writer.println("setup " + compliantName + " enabled");
 			
 			writer.close();
 		} catch (FileNotFoundException e) {
