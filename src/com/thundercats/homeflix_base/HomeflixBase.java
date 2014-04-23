@@ -56,8 +56,8 @@ public class HomeflixBase {
 		
 		VLCStream.loadNative();
 		//VLCStream.startTelnetServer();
-		new Thread(new VLCServer()).start();
-		
+		//new Thread(new VLCServer("/Users/iamparker/Desktop/Homeflix-vids/django.avi")).start();
+		//new VLCServer().startVLCInstance("/Users/iamparker/Desktop/Homeflix-vids/django.avi");
 		//new Thread(new VLCStream("Test")).start();
 		//VLCStream.launchStream("Test");//"/Users/iamparker/Desktop/Movies/django.avi");
 		
