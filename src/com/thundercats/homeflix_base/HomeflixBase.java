@@ -54,6 +54,7 @@ public class HomeflixBase {
 	public static TrayIcon trayIcon;
 	public static Image HFicon = new ImageIcon("src/resources/HFiconLR.png").getImage();
 	public static Image HFiconUD = new ImageIcon("src/resources/HFiconUpdateLR.png").getImage();
+	public static Image HFiconPlay = new ImageIcon("src/resources/HFiconPlayingLR.png").getImage();
 	
 	public static void main(String[] args){
 		Logger.setLogFile("log.txt");
@@ -224,6 +225,20 @@ public class HomeflixBase {
 			tray.remove(trayIcon);
 		    PopupMenu popup = new PopupMenu();
 		    trayIcon = new TrayIcon(HFicon, "Homeflix Base", popup);
+		    try {
+		        tray.add(trayIcon);
+		    } catch (AWTException e) {
+		        System.err.println(e);
+		    }
+		} else {
+		}
+	}
+	
+	public static void sysTrayPlaying(){
+		if (SystemTray.isSupported()) {
+			tray.remove(trayIcon);
+		    PopupMenu popup = new PopupMenu();
+		    trayIcon = new TrayIcon(HFiconPlay, "Streaming to Mobile", popup);
 		    try {
 		        tray.add(trayIcon);
 		    } catch (AWTException e) {
