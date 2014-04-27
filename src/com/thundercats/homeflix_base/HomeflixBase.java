@@ -49,6 +49,12 @@ public class HomeflixBase {
 	public static JTextArea textArea;
 	MediaManager manager;
 	
+	//Tray Icon prep
+	public static SystemTray tray = SystemTray.getSystemTray();
+	public static TrayIcon trayIcon;
+	public static Image HFicon = new ImageIcon("src/resources/HFiconLR.png").getImage();
+	public static Image HFiconUD = new ImageIcon("src/resources/HFiconUpdateLR.png").getImage();
+	
 	public static void main(String[] args){
 		Logger.setLogFile("log.txt");
 		
@@ -56,7 +62,7 @@ public class HomeflixBase {
 		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
-		sysTray();
+		sysTraySetup();
 		
 		//try {
 		//	Process process = Runtime.getRuntime().exec("cd external-jars/MacOS;./vlc --ttl 12 -vvv --color -I telnet --telnet-port 2465 --telnet-password videolan --rtsp-port 2464");
@@ -162,12 +168,8 @@ public class HomeflixBase {
 		echo("choose dir");
 	}
 	
-	public static void sysTray(){
+	public static void sysTraySetup(){
 		if (SystemTray.isSupported()) {
-		    // get the SystemTray instance
-		    SystemTray tray = SystemTray.getSystemTray();
-		    // load an image
-		    Image HFicon = new ImageIcon("src/resources/HFiconLR.png").getImage();
 		    // create a action listener to listen for default action executed on the tray icon
 		    ActionListener listener = new ActionListener() {
 		        public void actionPerformed(ActionEvent e) {
@@ -185,7 +187,7 @@ public class HomeflixBase {
 		    */
 		    /// ... add other items
 		    // construct a TrayIcon
-		    TrayIcon trayIcon = new TrayIcon(HFicon, "Homeflix", popup);
+		    trayIcon = new TrayIcon(HFicon, "Homeflix Base", popup);
 		    // set the TrayIcon properties
 		    trayIcon.addActionListener(listener);
 		    // ...
@@ -200,6 +202,34 @@ public class HomeflixBase {
 		    // disable tray option in your application or
 		    // perform other actions
 		    //...
+		}
+	}
+	
+	public static void sysTrayUpdate(){
+		if (SystemTray.isSupported()) {
+			tray.remove(trayIcon);
+		    PopupMenu popup = new PopupMenu();
+		    trayIcon = new TrayIcon(HFiconUD, "Updating Mobile app...", popup);
+		    try {
+		        tray.add(trayIcon);
+		    } catch (AWTException e) {
+		        System.err.println(e);
+		    }
+		} else {
+		}
+	}
+	
+	public static void sysTrayNormal(){
+		if (SystemTray.isSupported()) {
+			tray.remove(trayIcon);
+		    PopupMenu popup = new PopupMenu();
+		    trayIcon = new TrayIcon(HFicon, "Homeflix Base", popup);
+		    try {
+		        tray.add(trayIcon);
+		    } catch (AWTException e) {
+		        System.err.println(e);
+		    }
+		} else {
 		}
 	}
 }

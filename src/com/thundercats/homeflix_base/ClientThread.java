@@ -83,7 +83,9 @@ public class ClientThread extends Thread{
     	
     	//if message from Mobile is 'Request File List" then send formatted info to Mobile
     	if(command.equalsIgnoreCase("RequestFileList")){
+    		HomeflixBase.sysTrayUpdate();//change tray icon to 'updating'
     		updateMobile();
+    		HomeflixBase.sysTrayNormal();//change tray icon back to normal
     		return true;
     	}
     	
