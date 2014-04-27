@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -56,6 +57,11 @@ public class HomeflixBase {
 	public static Image HFiconUD = new ImageIcon("src/resources/HFiconUpdateLR.png").getImage();
 	public static Image HFiconPlay = new ImageIcon("src/resources/HFiconPlayingLR.png").getImage();
 	
+	//File Chooser prep
+	public static int returnVal;
+	public static final JFileChooser fc = new JFileChooser();
+	public static Path myDir;
+	
 	public static void main(String[] args){
 		Logger.setLogFile("log.txt");
 		
@@ -81,6 +87,8 @@ public class HomeflixBase {
 		
 		new Thread(new CheckOwnIP()).start();
 		
+		chooseDirectory();//must choose directory BEFORE Llamabrarian is initialized
+		
 		new Thread(new Llamabrarian()).start();
 		
 		//new Thread(new VLCStream("/Users/iamparker/Desktop/Movies/manfromearth.mp4", "172.31.77.246", rtspPort)).start();
@@ -100,12 +108,12 @@ public class HomeflixBase {
 		
 		echo("Starting Homeflix Base.\n");
 		
+		echo("Home directory chosen: " + myDir);
+		
 		HomeflixBase.echo("Make sure your mobile device is on the same Wifi network before connecting.\n");
         HomeflixBase.showAddresses();
         
 		showInstructions();
-		
-		chooseDirectory();
 		
 		new Thread(null, new ServerThread(port), "Server-Thread").start();
 	}
@@ -167,6 +175,22 @@ public class HomeflixBase {
 	
 	public static void chooseDirectory(){
 		echo("choose dir");
+		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fc.setDialogTitle("Directory Chooser");
+		fc.setAcceptAllFileFilterUsed(false);
+		//returnVal = fc.showDialog(textArea, "Select your video library directory");
+		
+		if (fc.showDialog(textArea, "Select") == JFileChooser.APPROVE_OPTION) { 
+		      System.out.println("getCurrentDirectory(): " 
+		         +  fc.getCurrentDirectory());
+		      System.out.println("getSelectedFile() : " 
+		         +  fc.getSelectedFile());
+		      
+		      myDir = fc.getSelectedFile().toPath();
+		}
+		else {
+			System.out.println("No Selection");
+		}
 	}
 	
 	public static void sysTraySetup(){

@@ -17,7 +17,10 @@ import java.util.List;
 
 public class Llamabrarian implements Runnable{
 	
-	public static Path dir = Paths.get("C:\\Users\\Richie\\TestVids");
+	//public static Path dir = Paths.get("C:\\Users\\Richie\\TestVids");//default debug path (Richie's machine)
+	public static Path dir = HomeflixBase.myDir;
+	
+	//dir = Paths.get(setHFDir());
 	
 	public Llamabrarian(){
 		
@@ -103,6 +106,11 @@ public class Llamabrarian implements Runnable{
 	    }
 	    
 	    return vidFiles2;
+	}
+	
+	public static String setHFDir(){
+		
+		return "C:\\Users\\Richie\\TestVids";//default dummy directory
 	}
 
 }
