@@ -9,6 +9,15 @@
 
 package com.thundercats.homeflix_base;
 
+import java.awt.AWTException;
+import java.awt.Image;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +31,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -42,10 +52,11 @@ public class HomeflixBase {
 	public static void main(String[] args){
 		Logger.setLogFile("log.txt");
 		
-		String[] files = {"/Users/iamparker/Desktop/Movies/manfromearth.mp4"};
+		//String[] files = {"/Users/iamparker/Desktop/Movies/manfromearth.mp4"};
 		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
+		sysTray();
 		
 		//try {
 		//	Process process = Runtime.getRuntime().exec("cd external-jars/MacOS;./vlc --ttl 12 -vvv --color -I telnet --telnet-port 2465 --telnet-password videolan --rtsp-port 2464");
@@ -151,4 +162,44 @@ public class HomeflixBase {
 		echo("choose dir");
 	}
 	
+	public static void sysTray(){
+		if (SystemTray.isSupported()) {
+		    // get the SystemTray instance
+		    SystemTray tray = SystemTray.getSystemTray();
+		    // load an image
+		    Image HFicon = new ImageIcon("src/resources/HFiconLR.png").getImage();
+		    // create a action listener to listen for default action executed on the tray icon
+		    ActionListener listener = new ActionListener() {
+		        public void actionPerformed(ActionEvent e) {
+		            // execute default action of the application
+		            // ...
+		        }
+		    };
+		    // create a popup menu
+		    PopupMenu popup = new PopupMenu();
+		    // create menu item for the default action
+		    /*
+		    MenuItem defaultItem = new MenuItem(...);
+		    defaultItem.addActionListener(listener);
+		    popup.add(defaultItem);
+		    */
+		    /// ... add other items
+		    // construct a TrayIcon
+		    TrayIcon trayIcon = new TrayIcon(HFicon, "Homeflix", popup);
+		    // set the TrayIcon properties
+		    trayIcon.addActionListener(listener);
+		    // ...
+		    // add the tray image
+		    try {
+		        tray.add(trayIcon);
+		    } catch (AWTException e) {
+		        System.err.println(e);
+		    }
+		    // ...
+		} else {
+		    // disable tray option in your application or
+		    // perform other actions
+		    //...
+		}
+	}
 }
