@@ -17,7 +17,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class StaticConnect implements Runnable{
+public class StaticConnect{
 	Socket socket;
 	String host, message;
 	int port;
@@ -27,9 +27,9 @@ public class StaticConnect implements Runnable{
 		this.host = host;
 		this.port = port;
 		this.message = message;
+		run();
 	}
-	
-	@Override
+
 	public void run(){
 		while(!socket.isConnected())
 			connect();
@@ -51,7 +51,7 @@ public class StaticConnect implements Runnable{
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		
 		/*try {

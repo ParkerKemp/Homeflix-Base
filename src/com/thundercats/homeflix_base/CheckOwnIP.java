@@ -25,14 +25,14 @@ public class CheckOwnIP implements Runnable{
 	@Override
 	public void run(){
 		String newIP;
+		Calendar calendar = Calendar.getInstance();
 		while(true){
-			Calendar calendar = Calendar.getInstance();
 			if(Calendar.getInstance().after(calendar)){
 				calendar.add(Calendar.SECOND, 5);
 				newIP = currentIP();
 				if(!newIP.equals(ip)){
 					ip = newIP;
-					//new Thread(new StaticConnect("mc.spinalcraft.com", 5000, ip)).start();
+					new StaticConnect("mc.spinalcraft.com", 5000, "ParkerBase " + ip);
 				}
 			}
 		}

@@ -186,7 +186,7 @@ public class HomeflixBase {
 		      System.out.println("getSelectedFile() : " 
 		         +  fc.getSelectedFile());
 		      
-		      myDir = fc.getSelectedFile().toPath();
+		      myDir = fc.getCurrentDirectory().toPath();
 		}
 		else {
 			System.out.println("No Selection");
