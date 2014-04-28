@@ -20,8 +20,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -29,6 +32,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -60,7 +64,7 @@ public class HomeflixBase {
 	//File Chooser prep
 	public static int returnVal;
 	public static final JFileChooser fc = new JFileChooser();
-	public static Path myDir;
+	public static Path myDir;//Directory of the video library, NOT the working dir
 	
 	public static void main(String[] args){
 		Logger.setLogFile("log.txt");
@@ -87,7 +91,10 @@ public class HomeflixBase {
 		
 		new Thread(new CheckOwnIP()).start();
 		
-		chooseDirectory();//must choose directory BEFORE Llamabrarian is initialized
+		//Directory setup
+		//Check if user has already established settings, if not, create them.
+		directoryConnect();
+		//chooseDirectory();//must choose directory BEFORE Llamabrarian is initialized
 		
 		new Thread(new Llamabrarian()).start();
 		
@@ -278,6 +285,46 @@ public class HomeflixBase {
 		    }
 		} 
 		else {
+		}
+	}
+	
+	public static void directoryConnect(){
+		//Check if preference file exists, use it/create it
+		File prefFile = new File(System.getProperty("user.dir") + File.separator + "prefs.txt");
+		if (prefFile.isFile() && prefFile.canRead()){//if the file exists
+			//Read prefs and use them
+			BufferedReader br = null;
+			try {
+				//Read file
+				br = new BufferedReader(new FileReader(prefFile));
+				myDir = Paths.get(br.readLine());//first line in file will be the user's chosen library path
+				//Any other persistent preferences should be retrieved here, collect them at this point
+			}
+			catch (IOException ex) {
+			    //Error handling?
+			} finally {
+				try {
+					br.close();//close the file
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		else
+		{
+			//Set up file with new preferences
+			//Have user choose directory
+			chooseDirectory();
+			//write prefs file
+			try {
+				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
+				writer.println(myDir.toString());
+				//Any other persistent data should be written here
+				writer.close();
+			}
+			catch (IOException ex) {
+				//Error handling schmerror schmandling
+			}
 		}
 	}
 }
