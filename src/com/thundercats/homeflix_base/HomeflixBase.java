@@ -20,8 +20,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -29,6 +32,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -60,7 +64,7 @@ public class HomeflixBase {
 	//File Chooser prep
 	public static int returnVal;
 	public static final JFileChooser fc = new JFileChooser();
-	public static Path myDir;
+	public static Path myDir;//Directory of the video library, NOT the working dir
 	
 	public static void main(String[] args){
 		Logger.setLogFile("log.txt");
@@ -87,7 +91,10 @@ public class HomeflixBase {
 		
 		new Thread(new CheckOwnIP()).start();
 		
-		chooseDirectory();//must choose directory BEFORE Llamabrarian is initialized
+		//Directory setup
+		//Check if user has already established settings, if not, create them.
+		directoryConnect();
+		//chooseDirectory();//must choose directory BEFORE Llamabrarian is initialized
 		
 		new Thread(new Llamabrarian()).start();
 		
@@ -108,9 +115,10 @@ public class HomeflixBase {
 		
 		echo("Starting Homeflix Base.\n");
 		
-		echo("Home directory chosen: " + myDir);
+		echo("Home directory chosen: " + myDir + "\n");
 		
-		HomeflixBase.echo("Make sure your mobile device is on the same Wifi network before connecting.\n");
+		echo("Homeflix server started.\n");
+		HomeflixBase.echo("Make sure your mobile device is on the same Wifi network as your home computer, then connect to Base.\n");
         HomeflixBase.showAddresses();
         
 		showInstructions();
@@ -123,14 +131,18 @@ public class HomeflixBase {
 		if(addresses.size() == 0)
 			echo("No IPv4 addresses found!");
 		else
-			echo("Connect with IP address: ");
+			echo("Type the following into the top field on Homeflix Mobile, then press Send: ");
 		for(int i = 0; i < addresses.size(); i++)
 			echo(addresses.get(i).getHostAddress());
 		echo("");
 	}
 	
 	public static void showInstructions(){
-		echo("To play a video, first connect with Homeflix Mobile. In the message textbox on the app, send \"play <filename>\", where <filename> is the name of a file in the same directory as Homeflix-Base.jar.\n");
+		//echo("To play a video, first connect with Homeflix Mobile. In the message textbox on the app, send \"play <filename>\", where <filename> is the name of a file in the same directory as Homeflix-Base.jar.\n");
+		echo("Select a video from your home library by tapping its name on Homeflix Mobile's screen.");
+		echo("You can scroll down the list by dragging it with your finger if there are more files than will fit on your screen.");
+		echo("You can update your list of files at any time by pressing 'Refresh File List'");
+		echo("");
 	}
 	
 	public static void echo(String msg){
@@ -159,7 +171,7 @@ public class HomeflixBase {
 			        	continue;
 			        }
 			        if(current_addr instanceof Inet4Address){
-			        	echo("Found a valid address at " + current_addr.getHostAddress());
+			        	//echo("Found a valid address at " + current_addr.getHostAddress());
 			        	inet4Addresses.add(current_addr);
 			        }
 			        	//return current_addr;
@@ -174,7 +186,7 @@ public class HomeflixBase {
 	}
 	
 	public static void chooseDirectory(){
-		echo("choose dir");
+		//echo("choose dir");
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fc.setDialogTitle("Directory Chooser");
 		fc.setAcceptAllFileFilterUsed(false);
@@ -189,7 +201,8 @@ public class HomeflixBase {
 		      myDir = fc.getCurrentDirectory().toPath();
 		}
 		else {
-			System.out.println("No Selection");
+			System.out.println("No Selection. Exiting.");
+			System.exit(0);
 		}
 	}
 	
@@ -240,7 +253,8 @@ public class HomeflixBase {
 		    } catch (AWTException e) {
 		        System.err.println(e);
 		    }
-		} else {
+		} 
+		else {
 		}
 	}
 	
@@ -254,7 +268,8 @@ public class HomeflixBase {
 		    } catch (AWTException e) {
 		        System.err.println(e);
 		    }
-		} else {
+		} 
+		else {
 		}
 	}
 	
@@ -268,7 +283,48 @@ public class HomeflixBase {
 		    } catch (AWTException e) {
 		        System.err.println(e);
 		    }
-		} else {
+		} 
+		else {
+		}
+	}
+	
+	public static void directoryConnect(){
+		//Check if preference file exists, use it/create it
+		File prefFile = new File(System.getProperty("user.dir") + File.separator + "prefs.txt");
+		if (prefFile.isFile() && prefFile.canRead()){//if the file exists
+			//Read prefs and use them
+			BufferedReader br = null;
+			try {
+				//Read file
+				br = new BufferedReader(new FileReader(prefFile));
+				myDir = Paths.get(br.readLine());//first line in file will be the user's chosen library path
+				//Any other persistent preferences should be retrieved here, collect them at this point
+			}
+			catch (IOException ex) {
+			    //Error handling?
+			} finally {
+				try {
+					br.close();//close the file
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		else
+		{
+			//Set up file with new preferences
+			//Have user choose directory
+			chooseDirectory();
+			//write prefs file
+			try {
+				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
+				writer.println(myDir.toString());
+				//Any other persistent data should be written here
+				writer.close();
+			}
+			catch (IOException ex) {
+				//Error handling schmerror schmandling
+			}
 		}
 	}
 }

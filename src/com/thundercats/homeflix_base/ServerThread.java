@@ -33,7 +33,8 @@ public class ServerThread implements Runnable{
         	//creating a server socket - 1st parameter is port number and 2nd is the backlog
             s = new ServerSocket(port);
             //Wait for an incoming connection
-            HomeflixBase.echo("Server socket created. Listening on port " + port + "...\n");
+            //HomeflixBase.echo("Server socket created. Listening on port " + port + "...\n");
+            HomeflixBase.echo("Homeflix Base server online and waiting for incoming connections");
             while(true){
                 //get the connection socket
                 conn = s.accept();

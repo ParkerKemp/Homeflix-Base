@@ -49,7 +49,7 @@ public class ClientThread extends Thread{
             //LocalVideoPlayer player; 
             //Now start reading input from client
             while((line = in.readLine()) != null && !line.equals(".")){
-            	HomeflixBase.echo("Client: " + line);
+            	//HomeflixBase.echo("Client: " + line);
             	parseRequest(line);
 
             }
