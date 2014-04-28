@@ -108,9 +108,10 @@ public class HomeflixBase {
 		
 		echo("Starting Homeflix Base.\n");
 		
-		echo("Home directory chosen: " + myDir);
+		echo("Home directory chosen: " + myDir + "\n");
 		
-		HomeflixBase.echo("Make sure your mobile device is on the same Wifi network before connecting.\n");
+		echo("Homeflix server started.\n");
+		HomeflixBase.echo("Make sure your mobile device is on the same Wifi network as your home computer, then connect to Base.\n");
         HomeflixBase.showAddresses();
         
 		showInstructions();
@@ -123,14 +124,18 @@ public class HomeflixBase {
 		if(addresses.size() == 0)
 			echo("No IPv4 addresses found!");
 		else
-			echo("Connect with IP address: ");
+			echo("Type the following into the top field on Homeflix Mobile, then press Send: ");
 		for(int i = 0; i < addresses.size(); i++)
 			echo(addresses.get(i).getHostAddress());
 		echo("");
 	}
 	
 	public static void showInstructions(){
-		echo("To play a video, first connect with Homeflix Mobile. In the message textbox on the app, send \"play <filename>\", where <filename> is the name of a file in the same directory as Homeflix-Base.jar.\n");
+		//echo("To play a video, first connect with Homeflix Mobile. In the message textbox on the app, send \"play <filename>\", where <filename> is the name of a file in the same directory as Homeflix-Base.jar.\n");
+		echo("Select a video from your home library by tapping its name on Homeflix Mobile's screen.");
+		echo("You can scroll down the list by dragging it with your finger if there are more files than will fit on your screen.");
+		echo("You can update your list of files at any time by pressing 'Refresh File List'");
+		echo("");
 	}
 	
 	public static void echo(String msg){
@@ -159,7 +164,7 @@ public class HomeflixBase {
 			        	continue;
 			        }
 			        if(current_addr instanceof Inet4Address){
-			        	echo("Found a valid address at " + current_addr.getHostAddress());
+			        	//echo("Found a valid address at " + current_addr.getHostAddress());
 			        	inet4Addresses.add(current_addr);
 			        }
 			        	//return current_addr;
@@ -174,7 +179,7 @@ public class HomeflixBase {
 	}
 	
 	public static void chooseDirectory(){
-		echo("choose dir");
+		//echo("choose dir");
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fc.setDialogTitle("Directory Chooser");
 		fc.setAcceptAllFileFilterUsed(false);
@@ -189,7 +194,8 @@ public class HomeflixBase {
 		      myDir = fc.getSelectedFile().toPath();
 		}
 		else {
-			System.out.println("No Selection");
+			System.out.println("No Selection. Exiting.");
+			System.exit(0);
 		}
 	}
 	
@@ -240,7 +246,8 @@ public class HomeflixBase {
 		    } catch (AWTException e) {
 		        System.err.println(e);
 		    }
-		} else {
+		} 
+		else {
 		}
 	}
 	
@@ -254,7 +261,8 @@ public class HomeflixBase {
 		    } catch (AWTException e) {
 		        System.err.println(e);
 		    }
-		} else {
+		} 
+		else {
 		}
 	}
 	
@@ -268,7 +276,8 @@ public class HomeflixBase {
 		    } catch (AWTException e) {
 		        System.err.println(e);
 		    }
-		} else {
+		} 
+		else {
 		}
 	}
 }
