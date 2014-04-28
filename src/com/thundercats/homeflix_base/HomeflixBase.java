@@ -158,7 +158,7 @@ public class HomeflixBase {
 				//echo("Checking next interface...");
 			    NetworkInterface current = interfaces.nextElement();
 			    //System.out.println(current);
-			    if (!current.isUp() || current.isLoopback() || current.isVirtual()){
+			    if (!current.isUp() || current.isLoopback()){// || current.isVirtual()){
 			    	//echo("Network interface is down, or is a loopback interface or virtual interface. Skipping.");
 			    	continue;
 			    }
