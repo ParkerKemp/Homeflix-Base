@@ -13,9 +13,57 @@ package com.thundercats.homeflix_base;
 import java.io.File;
 import java.nio.file.*;
 import java.util.List;
-
-
+import java.sql.*;
+import com.mysql.jdbc.Driver;
 public class Llamabrarian implements Runnable{
+	
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+	static final String DB_URL = "jdbc:mysql://localhost/homeflixbase";
+	static final String USER = "root";
+	static final String PASS = "password";
+	
+	public static void main (String[] args)
+	{
+		
+		Connection conn = null;
+		Statement stmt = null;
+		
+		try
+		{
+			//Class.forName("com.mysql.jdbc.Driver");
+			
+			System.out.println("Connecting to database...");
+			conn = DriverManager.getConnection(DB_URL,USER,PASS);
+			stmt = conn.createStatement();
+			String sql;
+			sql = "SELECT Playback_Length FROM Vid_Info";
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next())
+			{
+				String playbackLength = rs.getString("Playback_Length");
+				System.out.print("Playback Length: " + playbackLength);
+			}
+			
+			rs.close();
+			stmt.close();
+			conn.close();
+		}
+		
+		catch (SQLException se)
+		{
+			se.printStackTrace();
+		}
+		
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
 	
 	//public static Path dir = Paths.get("C:\\Users\\Richie\\TestVids");//default debug path (Richie's machine)
 	public static Path dir = HomeflixBase.myDir;
@@ -26,6 +74,9 @@ public class Llamabrarian implements Runnable{
 		
 	}
 
+	
+	
+	
 	@Override
 	public void run() 
 	{
