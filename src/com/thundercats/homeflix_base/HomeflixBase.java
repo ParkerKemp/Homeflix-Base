@@ -31,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class HomeflixBase {
 		
 		//String[] files = {"/Users/iamparker/Desktop/Movies/manfromearth.mp4"};
 		
+		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
 		sysTraySetup();
@@ -83,6 +85,7 @@ public class HomeflixBase {
 		//}
 		
 		VLCStream.loadNative();
+		System.out.println(new MediaInfo("/Users/iamparker/Desktop/Homeflix-vids/django.avi").getLength());
 		//VLCStream.startTelnetServer();
 		//new Thread(new VLCServer("/Users/iamparker/Desktop/Homeflix-vids/django.avi")).start();
 		//new VLCServer().startVLCInstance("/Users/iamparker/Desktop/Homeflix-vids/django.avi");
@@ -131,7 +134,7 @@ public class HomeflixBase {
 		if(addresses.size() == 0)
 			echo("No IPv4 addresses found!");
 		else
-			echo("Type the following into the top field on Homeflix Mobile, then press Send: ");
+			echo("Type one of the following into the top field on Homeflix Mobile, then press Send: ");
 		for(int i = 0; i < addresses.size(); i++)
 			echo(addresses.get(i).getHostAddress());
 		echo("");
@@ -151,6 +154,7 @@ public class HomeflixBase {
 	}
 	
 	public static ArrayList<InetAddress> getLocalAddresses(){
+		
 		ArrayList<InetAddress> inet4Addresses = new ArrayList<InetAddress>();
 		try {
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
