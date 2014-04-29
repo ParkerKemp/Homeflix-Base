@@ -129,10 +129,12 @@ public class Llamabrarian implements Runnable{
 	//Get list of video files in directory and pass as String[]
 	public static String[] videoList()//String myDirS) 
 	{
-		//myDirS = ".";//debug
+		//Reorganize this to take advantage of db
 		String files;
 		int j = 0;
 	    File folder = new File(dir.toString());
+	    
+	    //listOfFiles here gets info from directory. Replace this with db access
 	    File[] listOfFiles = folder.listFiles();
 	    
 	    //System.out.println(listOfFiles.length);
@@ -157,6 +159,38 @@ public class Llamabrarian implements Runnable{
 	    }
 	    
 	    return vidFiles2;
+	}
+	
+	//new function required, like videoList but sends play times IN ORDER
+	//current setup will basically be total crap
+	public static String[] playTimeList()
+	{
+		String files;
+		int j = 0;
+	    File folder = new File(dir.toString());
+	    
+	    File[] listOfFiles = folder.listFiles();
+		
+		String[] playTimes = new String[listOfFiles.length];
+		String[] playTimes2;
+		
+		for (int i = 0; i < listOfFiles.length; i++){
+	    	if (listOfFiles[i].isFile()) {
+	    		files = listOfFiles[i].getName();
+	    		if (files.endsWith(".mov") || files.endsWith(".MOV") || files.endsWith(".avi") || files.endsWith(".mp4")){
+	    			//System.out.println(files);//debug
+	    			playTimes[j] = files;
+	    			j++;
+	    		}
+	        }
+	    }
+	    
+	    playTimes2 = new String[j];
+	    for (int i = 0; i < j; i++){
+	    	playTimes2[i] = "00:00:10";
+	    }
+	    
+	    return playTimes2;
 	}
 	
 	public static String setHFDir(){
