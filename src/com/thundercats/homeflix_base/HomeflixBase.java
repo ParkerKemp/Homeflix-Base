@@ -85,7 +85,7 @@ public class HomeflixBase {
 		//}
 		
 		VLCStream.loadNative();
-		System.out.println(new MediaInfo("/Users/iamparker/Desktop/Homeflix-vids/django.avi").getLength());
+		System.out.println(new MediaInfo("C:\\Users\\Frank\\Desktop\\Watchmen.Ultimate.Cut.2009.1080p.BrRip.x264.YIFY.mp4").getLength());
 		//VLCStream.startTelnetServer();
 		//new Thread(new VLCServer("/Users/iamparker/Desktop/Homeflix-vids/django.avi")).start();
 		//new VLCServer().startVLCInstance("/Users/iamparker/Desktop/Homeflix-vids/django.avi");

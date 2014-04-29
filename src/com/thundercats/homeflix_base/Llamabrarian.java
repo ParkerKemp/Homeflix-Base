@@ -22,7 +22,7 @@ public class Llamabrarian implements Runnable{
 	static final String USER = "root";
 	static final String PASS = "password";
 	
-	public static void main (String[] args)
+	public static void ConnectToDB()
 	{
 		
 		Connection conn = null;
@@ -30,7 +30,7 @@ public class Llamabrarian implements Runnable{
 		
 		try
 		{
-			//Class.forName("com.mysql.jdbc.Driver");
+			
 			
 			System.out.println("Connecting to database...");
 			conn = DriverManager.getConnection(DB_URL,USER,PASS);
