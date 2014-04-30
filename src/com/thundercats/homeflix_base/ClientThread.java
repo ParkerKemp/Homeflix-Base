@@ -73,7 +73,7 @@ public class ClientThread extends Thread{
     	
     	//if message from Mobile is "play x" then make a stream for that file
     	if(command.equalsIgnoreCase("play") && tokens.length > 1){
-    		HomeflixBase.sysTrayPlaying();
+    		HomeflixBase.sysTraySet(HomeflixBase.HFiconPlay, "Playing to Mobile");
     		String filename = line.substring(5);
     		HomeflixBase.echo("Trying to play " + filename);
     		//new VLCStream(filename).init();
@@ -84,9 +84,9 @@ public class ClientThread extends Thread{
     	
     	//if message from Mobile is 'Request File List" then send formatted info to Mobile
     	if(command.equalsIgnoreCase("RequestFileList")){
-    		HomeflixBase.sysTrayUpdate();//change tray icon to 'updating'
+    		HomeflixBase.sysTraySet(HomeflixBase.HFiconUD, "Updating Mobile...");//change tray icon to 'updating'
     		updateMobile();
-    		HomeflixBase.sysTrayNormal();//change tray icon back to normal
+    		HomeflixBase.sysTraySet(HomeflixBase.HFicon, "Homeflix Base");//change tray icon back to normal
     		return true;
     	}
     	

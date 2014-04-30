@@ -135,7 +135,7 @@ public class Llamabrarian implements Runnable{
 	    String[] vidFiles = new String[listOfFiles.length];
 	    String[] vidFiles2;
 	    
-	    String[] vidTimes2;
+	    String[] vidTimes;
 	    
 	    String[][] vidInfo;
 	    
@@ -143,7 +143,6 @@ public class Llamabrarian implements Runnable{
 	    	if (listOfFiles[i].isFile()) {
 	    		files = listOfFiles[i].getName();
 	    		if (files.endsWith(".mov") || files.endsWith(".MOV") || files.endsWith(".avi") || files.endsWith(".mp4")){
-	    			//System.out.println(files);//debug
 	    			vidFiles[j] = files;
 	    			j++;
 	    		}
@@ -151,18 +150,18 @@ public class Llamabrarian implements Runnable{
 	    }
 	    
 	    vidFiles2 = new String[j];
-	    vidTimes2 = new String[j];
+	    vidTimes = new String[j];
 	    vidInfo = new String[j][2];
 	    
 	    for (int i = 0; i < j; i++){
 	    	vidFiles2[i] = vidFiles[i];
-	    	vidTimes2[i] = "00:00:10";
+	    	vidTimes[i] = "00:00:10";//dummy play time data
 	    	
 	    	vidInfo[i][0] = vidFiles[i];
-	    	vidInfo[i][1] = vidTimes2[i];
+	    	vidInfo[i][1] = vidTimes[i];
 	    }
 	    
-	    return vidInfo;
+	    return vidInfo;//pass double array consisting of File name & Play duration
 	}
 	
 	public static String setHFDir(){

@@ -75,7 +75,7 @@ public class HomeflixBase {
 		
 		JFrame frame = new JFrame();
 		textArea = new JTextArea();
-		sysTraySetup();
+		sysTraySet(HFicon, "Homeflix Base");
 		
 		//try {
 		//	Process process = Runtime.getRuntime().exec("cd external-jars/MacOS;./vlc --ttl 12 -vvv --color -I telnet --telnet-port 2465 --telnet-password videolan --rtsp-port 2464");
@@ -199,12 +199,20 @@ public class HomeflixBase {
 		//returnVal = fc.showDialog(textArea, "Select your video library directory");
 		
 		if (fc.showDialog(textArea, "Select") == JFileChooser.APPROVE_OPTION) { 
-		      System.out.println("getCurrentDirectory(): " 
-		         +  fc.getCurrentDirectory());
-		      System.out.println("getSelectedFile() : " 
-		         +  fc.getSelectedFile());
-		      
-		      myDir = fc.getCurrentDirectory().toPath();
+			System.out.println("getCurrentDirectory(): " + fc.getCurrentDirectory());
+			System.out.println("getSelectedFile() : " + fc.getSelectedFile());
+			myDir = fc.getSelectedFile().toPath();
+			
+			//write prefs file
+			try {
+				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
+				writer.println(myDir.toString());
+				//Any other persistent data should be written here
+				writer.close();
+			}
+			catch (IOException ex) {
+				//Error handling schmerror schmandling
+			}
 		}
 		else {
 			System.out.println("No Selection. Exiting.");
@@ -212,43 +220,35 @@ public class HomeflixBase {
 		}
 	}
 	
-	public static void sysTraySetup(){
+	public static void sysTraySet(Image icon, String altText){
 		if (SystemTray.isSupported()) {
-		    // create a action listener to listen for default action executed on the tray icon
-		    ActionListener listener = new ActionListener() {
-		        public void actionPerformed(ActionEvent e) {
-		            // execute default action of the application
-		            // ...
-		        }
-		    };
+		    //delete any old trayIcons before altering
+		    tray.remove(trayIcon);
 		    // create a popup menu
 		    PopupMenu popup = new PopupMenu();
-		    // create menu item for the default action
-		    /*
-		    MenuItem defaultItem = new MenuItem(...);
-		    defaultItem.addActionListener(listener);
-		    popup.add(defaultItem);
-		    */
-		    /// ... add other items
-		    // construct a TrayIcon
-		    trayIcon = new TrayIcon(HFicon, "Homeflix Base", popup);
-		    // set the TrayIcon properties
-		    trayIcon.addActionListener(listener);
-		    // ...
-		    // add the tray image
+		    
+		    trayIcon = new TrayIcon(icon, altText, popup);
+		    
+		    MenuItem changeDir = new MenuItem("Change Video Folder");
+		    popup.add(changeDir);
+		    
 		    try {
 		        tray.add(trayIcon);
 		    } catch (AWTException e) {
 		        System.err.println(e);
 		    }
-		    // ...
-		} else {
-		    // disable tray option in your application or
-		    // perform other actions
-		    //...
+		    
+		    changeDir.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	            	chooseDirectory();
+	            	System.out.println("User click Change directory.");
+	            }
+	        });
 		}
 	}
 	
+	//This was redundant code for testing and is to-be-deleted once sysTraySet is finished absorbing their uses
+	/*
 	public static void sysTrayUpdate(){
 		if (SystemTray.isSupported()) {
 			tray.remove(trayIcon);
@@ -293,6 +293,7 @@ public class HomeflixBase {
 		else {
 		}
 	}
+	*/
 	
 	public static void directoryConnect(){
 		//Check if preference file exists, use it/create it
@@ -321,16 +322,6 @@ public class HomeflixBase {
 			//Set up file with new preferences
 			//Have user choose directory
 			chooseDirectory();
-			//write prefs file
-			try {
-				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
-				writer.println(myDir.toString());
-				//Any other persistent data should be written here
-				writer.close();
-			}
-			catch (IOException ex) {
-				//Error handling schmerror schmandling
-			}
 		}
 	}
 }
