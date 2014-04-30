@@ -85,7 +85,9 @@ public class HomeflixBase {
 		//}
 		
 		VLCStream.loadNative();
+
 		//System.out.println(new MediaInfo("/Users/iamparker/Desktop/Homeflix-vids/django.avi").getLength());
+
 		//VLCStream.startTelnetServer();
 		//new Thread(new VLCServer("/Users/iamparker/Desktop/Homeflix-vids/django.avi")).start();
 		//new VLCServer().startVLCInstance("/Users/iamparker/Desktop/Homeflix-vids/django.avi");
