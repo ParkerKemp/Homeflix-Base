@@ -106,13 +106,6 @@ public class Llamabrarian implements Runnable{
                 if (event.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
                     System.out.println("Delete: " + event.context().toString());
                     
-                    //test code
-                    videoNames = videoList();//myDir.toString());
-                    for (int i = 0; i < videoNames.length; i++){
-                    	System.out.println(videoNames[i]);
-                    }
-                    ///test code
-                    
                 }
                 if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
                     System.out.println("Modify: " + event.context().toString());
@@ -127,7 +120,7 @@ public class Llamabrarian implements Runnable{
 
 
 	//Get list of video files in directory and pass as String[]
-	public static String[] videoList()//String myDirS) 
+	public static String[][] videoList()//String myDirS) 
 	{
 		//Reorganize this to take advantage of db
 		String files;
@@ -142,6 +135,10 @@ public class Llamabrarian implements Runnable{
 	    String[] vidFiles = new String[listOfFiles.length];
 	    String[] vidFiles2;
 	    
+	    String[] vidTimes2;
+	    
+	    String[][] vidInfo;
+	    
 	    for (int i = 0; i < listOfFiles.length; i++){
 	    	if (listOfFiles[i].isFile()) {
 	    		files = listOfFiles[i].getName();
@@ -154,43 +151,18 @@ public class Llamabrarian implements Runnable{
 	    }
 	    
 	    vidFiles2 = new String[j];
+	    vidTimes2 = new String[j];
+	    vidInfo = new String[j][2];
+	    
 	    for (int i = 0; i < j; i++){
 	    	vidFiles2[i] = vidFiles[i];
+	    	vidTimes2[i] = "00:00:10";
+	    	
+	    	vidInfo[i][0] = vidFiles[i];
+	    	vidInfo[i][1] = vidTimes2[i];
 	    }
 	    
-	    return vidFiles2;
-	}
-	
-	//new function required, like videoList but sends play times IN ORDER
-	//current setup will basically be total crap
-	public static String[] playTimeList()
-	{
-		String files;
-		int j = 0;
-	    File folder = new File(dir.toString());
-	    
-	    File[] listOfFiles = folder.listFiles();
-		
-		String[] playTimes = new String[listOfFiles.length];
-		String[] playTimes2;
-		
-		for (int i = 0; i < listOfFiles.length; i++){
-	    	if (listOfFiles[i].isFile()) {
-	    		files = listOfFiles[i].getName();
-	    		if (files.endsWith(".mov") || files.endsWith(".MOV") || files.endsWith(".avi") || files.endsWith(".mp4")){
-	    			//System.out.println(files);//debug
-	    			playTimes[j] = files;
-	    			j++;
-	    		}
-	        }
-	    }
-	    
-	    playTimes2 = new String[j];
-	    for (int i = 0; i < j; i++){
-	    	playTimes2[i] = "00:00:10";
-	    }
-	    
-	    return playTimes2;
+	    return vidInfo;
 	}
 	
 	public static String setHFDir(){
