@@ -4,7 +4,7 @@
  * Richie Davidson, Parker Kemp, Colin Page
  * Spring Semester 2014
  * 
- * 
+ * This is the main class of Homeflix Base code.
  */
 
 package com.thundercats.homeflix_base;
@@ -144,7 +144,10 @@ public class HomeflixBase {
 	
 	public static void showInstructions(){
 		//echo("To play a video, first connect with Homeflix Mobile. In the message textbox on the app, send \"play <filename>\", where <filename> is the name of a file in the same directory as Homeflix-Base.jar.\n");
-		echo("Select a video from your home library by tapping its name on Homeflix Mobile's screen.");
+		echo("Once connected, Homeflix Mobile will display a list of the playable files in your chosen folder.");
+		echo("To change your folder, right click the HF system tray icon and select 'Change Video Folder'.");
+		echo("");
+		echo("Play a video from your home library by tapping its name on Homeflix Mobile's screen.");
 		echo("You can scroll down the list by dragging it with your finger if there are more files than will fit on your screen.");
 		echo("You can update your list of files at any time by pressing 'Refresh File List'");
 		echo("");
@@ -187,7 +190,7 @@ public class HomeflixBase {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		echo("");
+		//echo("");
 		return inet4Addresses;
 	}
 	

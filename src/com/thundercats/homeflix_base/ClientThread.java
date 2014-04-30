@@ -5,6 +5,7 @@
  * Spring Semester 2014
  * 
  * Acts as client, receives messages from Mobile and interprets commands
+ * Returns relevant info to Mobile when necessary
  */
 
 package com.thundercats.homeflix_base;
