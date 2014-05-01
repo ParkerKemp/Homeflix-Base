@@ -107,111 +107,78 @@ public class Llamabrarian implements Runnable {
 	public static void testForDirectoryChange(Path myDir) {// , String myDirS){
 		String[] videoNames;
 		System.out.println(myDir.toString());
-		try {
-			WatchService watcher = myDir.getFileSystem().newWatchService();
-			myDir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE,
-					StandardWatchEventKinds.ENTRY_DELETE,
-					StandardWatchEventKinds.ENTRY_MODIFY);
+        try {
+           WatchService watcher = myDir.getFileSystem().newWatchService();
+           myDir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE,
+           StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
 
-			WatchKey watckKey = watcher.take();
+           WatchKey watckKey = watcher.take();
 
-			while (true) { // watch for events and print out the kind of event
-				List<WatchEvent<?>> events = watckKey.pollEvents();
-				for (WatchEvent event : events) {
-					if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-						System.out.println("Created: "
-								+ event.context().toString());
-					}
-					if (event.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
-						System.out.println("Delete: "
-								+ event.context().toString());
+           while(true){ //watch for events and print out the kind of event
+           List<WatchEvent<?>> events = watckKey.pollEvents();
+           for (WatchEvent event : events) {
+                if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
+                    System.out.println("Created: " + event.context().toString());
+                }
+                if (event.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
+                    System.out.println("Delete: " + event.context().toString());
+                    
+                }
+                if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
+                    System.out.println("Modify: " + event.context().toString());
+                }
+            }
+           }
 
-						// test code
-						videoNames = videoList();// myDir.toString());
-						for (int i = 0; i < videoNames.length; i++) {
-							System.out.println(videoNames[i]);
-						}
-						// /test code
+        } catch (Exception e) {
+            System.out.println("Error: " + e.toString());
+        }
+    }
 
-					}
-					if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
-						System.out.println("Modify: "
-								+ event.context().toString());
-					}
-				}
-			}
 
-		} catch (Exception e) {
-			System.out.println("Error: " + e.toString());
-		}
-	}
-
-	// Get list of video files in directory and pass as String[]
-	public static String[] videoList()// String myDirS)
+	//Get list of video files in directory and pass as String[]
+	public static String[][] videoList()//String myDirS) 
 	{
 		// Reorganize this to take advantage of db
 		String files;
 		int j = 0;
-		File folder = new File(dir.toString());
-
-		// listOfFiles here gets info from directory. Replace this with db
-		// access
-		File[] listOfFiles = folder.listFiles();
-
-		// System.out.println(listOfFiles.length);
-
-		String[] vidFiles = new String[listOfFiles.length];
-		String[] vidFiles2;
-
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				files = listOfFiles[i].getName();
-				if (files.endsWith(".mov") || files.endsWith(".MOV")
-						|| files.endsWith(".avi") || files.endsWith(".mp4")) {
-					// System.out.println(files);//debug
-					vidFiles[j] = files;
-					j++;
-				}
-			}
-		}
-
-		vidFiles2 = new String[j];
-		for (int i = 0; i < j; i++) {
-			vidFiles2[i] = vidFiles[i];
-		}
-
-		return vidFiles2;
-	}
-
-	// new function required, like videoList but sends play times IN ORDER
-	// current setup will basically be total crap
-	public static String[] playTimeList() {
-		String files;
-		int j = 0;
-		File folder = new File(dir.toString());
-
-		File[] listOfFiles = folder.listFiles();
-
-		String[] playTimes = new String[listOfFiles.length];
-		String[] playTimes2;
-
-		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				files = listOfFiles[i].getName();
-				if (files.endsWith(".mov") || files.endsWith(".MOV")
-						|| files.endsWith(".avi") || files.endsWith(".mp4")) {
-					playTimes[j] = files;
-					j++;
-				}
-			}
-		}
-
-		playTimes2 = new String[j];
-		for (int i = 0; i < j; i++) {
-			playTimes2[i] = "00:00:10";
-		}
-
-		return playTimes2;
+	    File folder = new File(dir.toString());
+	    
+	    //listOfFiles here gets info from directory. Replace this with db access
+	    File[] listOfFiles = folder.listFiles();
+	    
+	    //System.out.println(listOfFiles.length);
+	    
+	    String[] vidFiles = new String[listOfFiles.length];
+	    String[] vidFiles2;
+	    
+	    String[] vidTimes;
+	    
+	    String[][] vidInfo;
+	    
+	    for (int i = 0; i < listOfFiles.length; i++){
+	    	if (listOfFiles[i].isFile()) {
+	    		files = listOfFiles[i].getName();
+	    		if (files.endsWith(".mov") || files.endsWith(".MOV") || files.endsWith(".avi") || files.endsWith(".mp4")){
+	    			vidFiles[j] = files;
+	    			j++;
+	    		}
+	        }
+	    }
+	    
+	    vidFiles2 = new String[j];
+	    vidTimes = new String[j];
+	    vidInfo = new String[j][2];
+	    
+	    for (int i = 0; i < j; i++){
+	    	vidFiles2[i] = vidFiles[i];
+	    	vidTimes[i] = "00:00:10";//dummy play time data
+	    	
+	    	vidInfo[i][0] = vidFiles[i];
+	    	vidInfo[i][1] = vidTimes[i];
+	    }
+	    
+	    return vidInfo;//pass double array consisting of File name & Play duration
 	}
 
 	public static String setHFDir() {

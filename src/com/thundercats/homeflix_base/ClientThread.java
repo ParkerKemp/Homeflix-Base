@@ -5,6 +5,7 @@
  * Spring Semester 2014
  * 
  * Acts as client, receives messages from Mobile and interprets commands
+ * Returns relevant info to Mobile when necessary
  */
 
 package com.thundercats.homeflix_base;
@@ -73,7 +74,7 @@ public class ClientThread extends Thread{
     	
     	//if message from Mobile is "play x" then make a stream for that file
     	if(command.equalsIgnoreCase("play") && tokens.length > 1){
-    		HomeflixBase.sysTrayPlaying();
+    		HomeflixBase.sysTraySet(HomeflixBase.HFiconPlay, "Playing to Mobile");
     		String filename = line.substring(5);
     		HomeflixBase.echo("Trying to play " + filename);
     		//new VLCStream(filename).init();
@@ -84,9 +85,9 @@ public class ClientThread extends Thread{
     	
     	//if message from Mobile is 'Request File List" then send formatted info to Mobile
     	if(command.equalsIgnoreCase("RequestFileList")){
-    		HomeflixBase.sysTrayUpdate();//change tray icon to 'updating'
+    		HomeflixBase.sysTraySet(HomeflixBase.HFiconUD, "Updating Mobile...");//change tray icon to 'updating'
     		updateMobile();
-    		HomeflixBase.sysTrayNormal();//change tray icon back to normal
+    		HomeflixBase.sysTraySet(HomeflixBase.HFicon, "Homeflix Base");//change tray icon back to normal
     		return true;
     	}
     	
@@ -96,13 +97,12 @@ public class ClientThread extends Thread{
     public void updateMobile(){
     	//HomeflixBase.echo("Ground Control receives");
 		//Tell Mobile how many files there are
-    	String[] myFileNames = Llamabrarian.videoList();//get list of files
-    	String[] myFileTimes = Llamabrarian.playTimeList();//get list of file durations
-		out.println("FILE " + myFileNames.length);
+    	String[][] myFileInfo = Llamabrarian.videoList();//get list of files
+		out.println("FILE " + myFileInfo.length);
 		//Then one by one, name each file and file play length
-		for(int i=0; i<myFileNames.length; i++)
+		for(int i=0; i<myFileInfo.length; i++)
 		{
-            out.println("FILE " + myFileNames[i] + ";" + myFileTimes[i]);
+            out.println("FILE " + myFileInfo[i][0] + ";" + myFileInfo[i][1]);
         }
     }
 }
