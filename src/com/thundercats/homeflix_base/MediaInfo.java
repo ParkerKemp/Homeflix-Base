@@ -1,5 +1,10 @@
 package com.thundercats.homeflix_base;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
@@ -7,27 +12,43 @@ import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 public class MediaInfo{
 	
 	private volatile long playbackLength = -2;
-	private String filename;
+	private String path, filename;
 	
-	public MediaInfo(String filename){
+	public MediaInfo(String path, String filename){
+		this.path = path;
 		this.filename = filename;
+		getLength();
+	}
+	
+	public String getFilename(){
+		return filename;
 	}
 	
     public long getLength() {
     	if(playbackLength > 0)
     		return playbackLength;
     	
-    	MediaPlayerFactory factory = new MediaPlayerFactory();//"--intf", "macosx");
+    	MediaPlayerFactory factory = new MediaPlayerFactory("--vout", "dummy");
+    	
         MediaPlayer mediaPlayer = factory.newHeadlessMediaPlayer();
         mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void videoOutput(MediaPlayer mediaPlayer, int newCount) {
-                setLength(mediaPlayer.getLength());
+            }
+            
+            @Override
+            public void mediaStateChanged(MediaPlayer mediaPlayer, int newState){
+            	setLength(mediaPlayer.getLength());
+            }
+            
+            @Override
+            public void error(MediaPlayer mediaPlayer){
             }
         });
-        mediaPlayer.prepareMedia(filename);
- 
+        System.out.println(path + File.separator + filename);
+        mediaPlayer.prepareMedia(path + File.separator + filename);
         mediaPlayer.parseMedia();
+        
         mediaPlayer.start();
         
         while(playbackLength == -2)
@@ -37,6 +58,10 @@ public class MediaInfo{
         factory.release();
         
         return playbackLength;
+    }
+    
+    public boolean isValid(){
+    	return playbackLength > 0;
     }
 
 	public void setLength(long length){
