@@ -97,12 +97,14 @@ public class ClientThread extends Thread{
     public void updateMobile(){
     	//HomeflixBase.echo("Ground Control receives");
 		//Tell Mobile how many files there are
-    	String[][] myFileInfo = Llamabrarian.videoList();//get list of files
+    	//String[][] myFileInfo = Llamabrarian.videoList();//get list of files//THIS ONE IS NAME AND TIME
+    	String[] myFileInfo = Llamabrarian.videoList();//get list of files//THIS ONE IS JUST NAME
 		out.println("FILE " + myFileInfo.length);
 		//Then one by one, name each file and file play length
 		for(int i=0; i<myFileInfo.length; i++)
 		{
-            out.println("FILE " + myFileInfo[i][0] + ";" + myFileInfo[i][1]);
+            //out.println("FILE " + myFileInfo[i][0] + ";" + myFileInfo[i][1]);//THIS ONE IS NAME AND TIME
+			out.println("FILE " + myFileInfo[i]);//THIS ONE IS JUST NAME
         }
     }
 }

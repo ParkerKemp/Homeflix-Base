@@ -136,7 +136,9 @@ public class Llamabrarian implements Runnable {
     }
 
 
-	//Get list of video files in directory and pass as String[]
+	//Get list of video files and data in directory and pass as String[][]
+	//THIS ONE IS NAME AND TIME
+	/*
 	public static String[][] videoList()//String myDirS) 
 	{
 		// Reorganize this to take advantage of db
@@ -180,10 +182,40 @@ public class Llamabrarian implements Runnable {
 	    
 	    return vidInfo;//pass double array consisting of File name & Play duration
 	}
-
-	public static String setHFDir() {
-
-		return "C:\\Users\\Richie\\TestVids";// default dummy directory
-	}
+	*/
+	//THIS ONE IS JUST NAME
+	public static String[] videoList()//String myDirS) 
+		{
+			// Reorganize this to take advantage of db
+			String files;
+			int j = 0;
+		    File folder = new File(dir.toString());
+		    
+		    //listOfFiles here gets info from directory. Replace this with db access
+		    File[] listOfFiles = folder.listFiles();
+		    
+		    //System.out.println(listOfFiles.length);
+		    
+		    String[] vidFiles = new String[listOfFiles.length];
+		    String[] vidFiles2;
+		    
+		    for (int i = 0; i < listOfFiles.length; i++){
+		    	if (listOfFiles[i].isFile()) {
+		    		files = listOfFiles[i].getName();
+		    		if (files.endsWith(".mov") || files.endsWith(".MOV") || files.endsWith(".avi") || files.endsWith(".mp4")){
+		    			vidFiles[j] = files;
+		    			j++;
+		    		}
+		        }
+		    }
+		    
+		    vidFiles2 = new String[j];
+		    
+		    for (int i = 0; i < j; i++){
+		    	vidFiles2[i] = vidFiles[i];
+		    }
+		    
+		    return vidFiles2;//pass double array consisting of File name & Play duration
+		}
 
 }
