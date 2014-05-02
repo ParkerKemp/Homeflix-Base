@@ -33,19 +33,10 @@ public class MediaInfo{
         MediaPlayer mediaPlayer = factory.newHeadlessMediaPlayer();
         mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
-            public void videoOutput(MediaPlayer mediaPlayer, int newCount) {
-            }
-            
-            @Override
             public void mediaStateChanged(MediaPlayer mediaPlayer, int newState){
             	setLength(mediaPlayer.getLength());
             }
-            
-            @Override
-            public void error(MediaPlayer mediaPlayer){
-            }
         });
-        System.out.println(path + File.separator + filename);
         mediaPlayer.prepareMedia(path + File.separator + filename);
         mediaPlayer.parseMedia();
         
@@ -53,7 +44,7 @@ public class MediaInfo{
         
         while(playbackLength == -2)
         	;
-
+        
         mediaPlayer.release();
         factory.release();
         
