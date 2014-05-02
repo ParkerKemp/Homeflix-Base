@@ -207,7 +207,6 @@ public class Llamabrarian implements Runnable {
 		//This code is only reached upon SQLException
 		return false;
 	}
-
 	private static void watchDirectory() {
 		//Watch the library directory until the end of time, or until
 		//Homeflix Base stops (whichever comes first). This method contains

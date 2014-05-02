@@ -86,7 +86,7 @@ public class ClientThread extends Thread{
     	//if message from Mobile is 'Request File List" then send formatted info to Mobile
     	if(command.equalsIgnoreCase("RequestFileList")){
     		HomeflixBase.sysTraySet(HomeflixBase.HFiconUD, "Updating Mobile...");//change tray icon to 'updating'
-    		updateMobile();
+    		sendFileListToMobile();
     		HomeflixBase.sysTraySet(HomeflixBase.HFicon, "Homeflix Base");//change tray icon back to normal
     		return true;
     	}
@@ -94,15 +94,18 @@ public class ClientThread extends Thread{
     	return false;
     }
     
-    public void updateMobile(){
+    public void sendFileListToMobile(){
     	//HomeflixBase.echo("Ground Control receives");
 		//Tell Mobile how many files there are
-    	String[] myFileInfo = Llamabrarian.getSqlFileList();//get list of files
+
+    	//String[][] myFileInfo = Llamabrarian.videoList();//get list of files//THIS ONE IS NAME AND TIME
+    	String[] myFileInfo = Llamabrarian.getSqlFileList();//get list of files//THIS ONE IS JUST NAME
 		out.println("FILE " + myFileInfo.length);
 		//Then one by one, name each file and file play length
-		for(int i=0; i<myFileInfo.length; i++){
-			out.println("FILE " + myFileInfo[i]);
-            //out.println("FILE " + myFileInfo[i][0] + ";" + myFileInfo[i][1]);
+		for(int i=0; i<myFileInfo.length; i++)
+		{
+            //out.println("FILE " + myFileInfo[i][0] + ";" + myFileInfo[i][1]);//THIS ONE IS NAME AND TIME
+			out.println("FILE " + myFileInfo[i]);//THIS ONE IS JUST NAME
         }
     }
 }
