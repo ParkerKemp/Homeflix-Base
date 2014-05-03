@@ -89,6 +89,7 @@ public class ClientThread extends Thread {
 		//to save CPU power (it runs pretty hot)
 		if (command.equalsIgnoreCase("stop")) {
 			serverInstance.stopVLC();
+			HomeflixBase.sysTraySet(HomeflixBase.HFicon, "Homeflix Base");
 			return true;
 		}
 

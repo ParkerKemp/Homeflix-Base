@@ -20,6 +20,7 @@ import com.sun.jna.NativeLibrary;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_instance_t;
+import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VLCServer {
@@ -95,11 +96,13 @@ public class VLCServer {
 
 	public static void loadNative() {
 		//Load the VLC native library
-		
+		/*
 		 NativeLibrary.addSearchPath(
 		 RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "/VLC-OSX/lib"
 		 );
+		 */
 		 /*Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);*/
+		new NativeDiscovery().discover();
 	}
 
 }

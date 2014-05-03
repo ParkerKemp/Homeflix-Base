@@ -196,8 +196,9 @@ public class HomeflixBase {
 			}
 		}
 		else {
-			System.out.println("No Selection. Exiting.");
-			System.exit(0);
+			echo("No Selection. Defaulting to working directory.");
+			//System.exit(0);//Originally exited here
+			myDir = Paths.get(System.getProperty("user.dir"));
 		}
 	}
 	
