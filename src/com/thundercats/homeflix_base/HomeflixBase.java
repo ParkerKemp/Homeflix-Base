@@ -62,6 +62,8 @@ public class HomeflixBase {
 		
 		//Load VLC native library
 		VLCServer.loadNative();
+		
+		createServerWindow();
 
 		//Directory setup
 		//Check if user has already established settings, if not, create them.
@@ -69,8 +71,6 @@ public class HomeflixBase {
 		
 		//Wake up Llamabrarian with a bucket of water, yell at him to get back to work
 		new Thread(new Llamabrarian()).start();
-		
-		createServerWindow();
 		
 		greetUser();
 		
@@ -123,6 +123,8 @@ public class HomeflixBase {
 		
 		for(int i = 0; i < addresses.size(); i++)
 			echo(addresses.get(i).getHostAddress());
+		
+		echo("");
 	}
 	
 	public static void showInstructions(){
@@ -198,9 +200,21 @@ public class HomeflixBase {
 			}
 		}
 		else {
-			echo("No Selection. Defaulting to working directory.");
+			echo("No Selection. Defaulting to previously indicated directory (or working directory).");
+			echo("");
 			//System.exit(0);//Originally exited here
-			myDir = Paths.get(System.getProperty("user.dir"));
+			//myDir = Paths.get(System.getProperty("user.dir"));
+			
+			//write prefs file
+			try {
+				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
+				writer.println(myDir.toString());
+				//Any other persistent data should be written here
+				writer.close();
+			}
+			catch (IOException ex) {
+				//Error handling schmerror schmandling
+			}
 		}
 	}
 	
@@ -328,6 +342,9 @@ public class HomeflixBase {
 		{
 			//Set up file with new preferences
 			//Have user choose directory
+			echo("Unable to find preferences file. Please select your video directory.");
+			echo("");
+			myDir = Paths.get(System.getProperty("user.dir"));
 			chooseDirectory();
 		}
 	}
