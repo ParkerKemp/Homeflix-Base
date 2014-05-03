@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
+import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
@@ -96,13 +97,42 @@ public class VLCServer {
 
 	public static void loadNative() {
 		//Load the VLC native library
-		/*
-		 NativeLibrary.addSearchPath(
-		 RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "/VLC-OSX/lib"
-		 );
-		 */
-		 /*Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);*/
-		new NativeDiscovery().discover();
+//		C:\Program Files\VideoLAN\VLC\
+		System.out.println(System.getProperty("os.arch"));
+		//new NativeDiscovery().discover();
+		if(isWindows32()){
+			System.out.println("Windows 32bit identified.");
+			NativeLibrary.addSearchPath(
+					RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC-WINDOWS-32\\VLC"
+					);
+		}
+		else if(isWindows64()){
+			System.out.println("Windows 64bit identified.");
+			NativeLibrary.addSearchPath(
+					RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC-WINDOWS-64\\VLC"
+					);
+		}
+		else if(isMac()){
+			System.out.println("Mac OS X identified.");
+			NativeLibrary.addSearchPath(
+					RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "/VLC-OSX/lib"
+					);
+		}
+		else
+			System.out.println("No platform identified.");
+		// Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+	}
+	
+	public static boolean isWindows32(){
+		return System.getProperty("os.name").toLowerCase().startsWith("win") && System.getProperty("os.arch").toLowerCase().equals("x86");
+	}
+	
+	public static boolean isWindows64(){
+		return System.getProperty("os.name").toLowerCase().startsWith("win") && System.getProperty("os.arch").toLowerCase().equals("x86_64");
+	}
+	
+	public static boolean isMac(){
+		return System.getProperty("os.name").toLowerCase().startsWith("mac");
 	}
 
 }
