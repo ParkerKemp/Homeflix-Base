@@ -54,7 +54,7 @@ public class HomeflixBase {
 	//File Chooser prep
 	public static int returnVal;
 	public static final JFileChooser fc = new JFileChooser();
-	public static Path myDir;//Directory of the video library, NOT the working dir
+	//public static Path myDir;//Directory of the video library, NOT the working dir
 	
 	public static void main(String[] args){
 		//Create system tray icon
@@ -102,7 +102,7 @@ public class HomeflixBase {
 	private static void greetUser(){
 		echo("Starting Homeflix Base.\n");
 		
-		echo("Home directory chosen: " + myDir + "\n");
+		echo("Home directory chosen: " + Llamabrarian.dir + "\n");
 		
 		echo("Homeflix server started.\n");
 		HomeflixBase.echo("Make sure your mobile device is on the same Wifi network as your home computer, then connect to Base.\n");
@@ -186,12 +186,13 @@ public class HomeflixBase {
 		if (fc.showDialog(textArea, "Select") == JFileChooser.APPROVE_OPTION) { 
 			System.out.println("getCurrentDirectory(): " + fc.getCurrentDirectory());
 			System.out.println("getSelectedFile() : " + fc.getSelectedFile());
-			myDir = fc.getSelectedFile().toPath();
+			//myDir = fc.getSelectedFile().toPath();
+			Llamabrarian.setDirectory(fc.getSelectedFile().toPath());
 			
 			//write prefs file
 			try {
 				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
-				writer.println(myDir.toString());
+				writer.println(Llamabrarian.dir.toString());
 				//Any other persistent data should be written here
 				writer.close();
 			}
@@ -208,13 +209,14 @@ public class HomeflixBase {
 			//write prefs file
 			try {
 				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
-				writer.println(myDir.toString());
+				writer.println(Llamabrarian.dir.toString());
 				//Any other persistent data should be written here
 				writer.close();
 			}
 			catch (IOException ex) {
 				//Error handling schmerror schmandling
 			}
+			Llamabrarian.setDirectory(Paths.get(System.getProperty("user.dir")));
 		}
 	}
 	
@@ -325,7 +327,7 @@ public class HomeflixBase {
 			try {
 				//Read file
 				br = new BufferedReader(new FileReader(prefFile));
-				myDir = Paths.get(br.readLine());//first line in file will be the user's chosen library path
+				Llamabrarian.setDirectory(Paths.get(br.readLine()));//first line in file will be the user's chosen library path
 				//Any other persistent preferences should be retrieved here, collect them at this point
 			}
 			catch (IOException ex) {
@@ -344,7 +346,7 @@ public class HomeflixBase {
 			//Have user choose directory
 			echo("Unable to find preferences file. Please select your video directory.");
 			echo("");
-			myDir = Paths.get(System.getProperty("user.dir"));
+			Llamabrarian.setDirectory(Paths.get(System.getProperty("user.dir")));
 			chooseDirectory();
 		}
 	}

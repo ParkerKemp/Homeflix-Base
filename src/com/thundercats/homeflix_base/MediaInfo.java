@@ -76,7 +76,7 @@ public class MediaInfo{
     	//Return true if the file is actually a video file, false otherwise
     	
     	//Non-video files will have playbackLength <= 0
-    	return playbackLength > 0;
+    	return playbackLength > 1000;
     }
 
 	public void setLength(long length){
