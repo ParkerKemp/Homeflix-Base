@@ -97,30 +97,23 @@ public class VLCServer {
 
 	public static void loadNative() {
 		//Load the VLC native library
-//		C:\Program Files\VideoLAN\VLC\
-		System.out.println(System.getProperty("os.arch"));
-		//new NativeDiscovery().discover();
 		if(isWindows32()){
-			System.out.println("Windows 32bit identified.");
 			NativeLibrary.addSearchPath(
 					RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC-WINDOWS-32\\VLC"
 					);
 		}
 		else if(isWindows64()){
-			System.out.println("Windows 64bit identified.");
 			NativeLibrary.addSearchPath(
 					RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC-WINDOWS-64\\VLC"
 					);
 		}
 		else if(isMac()){
-			System.out.println("Mac OS X identified.");
 			NativeLibrary.addSearchPath(
 					RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "/VLC-OSX/lib"
 					);
 		}
 		else
-			System.out.println("No platform identified.");
-		// Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+			System.out.println("Unable to identify platform!!!");
 	}
 	
 	public static boolean isWindows32(){

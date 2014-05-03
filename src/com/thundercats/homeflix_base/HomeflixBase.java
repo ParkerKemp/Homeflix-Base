@@ -95,7 +95,7 @@ public class HomeflixBase {
 		frame.add(scrollPane);
 		
 		frame.setSize(600,400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.setVisible(true);
 	}
 	
@@ -134,6 +134,8 @@ public class HomeflixBase {
 		echo("Play a video from your home library by tapping its name on Homeflix Mobile's screen.");
 		echo("You can scroll down the list by dragging it with your finger if there are more files than will fit on your screen.");
 		echo("You can update your list of files at any time by pressing 'Refresh File List'");
+		echo("");
+		echo("You may now close this window and Homeflix Base will continue running.");
 		echo("");
 	}
 	
@@ -214,7 +216,12 @@ public class HomeflixBase {
 		    trayIcon = new TrayIcon(icon, altText, popup);
 		    
 		    MenuItem changeDir = new MenuItem("Change Video Folder");
+		    MenuItem showWindow = new MenuItem("Show Terminal");
+		    MenuItem quitMe = new MenuItem("Quit Homeflix Base");
+		    
 		    popup.add(changeDir);
+		    popup.add(showWindow);
+		    popup.add(quitMe);
 		    
 		    try {
 		        tray.add(trayIcon);
@@ -226,7 +233,18 @@ public class HomeflixBase {
 	            @Override
 				public void actionPerformed(ActionEvent e) {
 	            	chooseDirectory();
-	            	System.out.println("User click Change directory.");
+	            }
+	        });
+		    showWindow.addActionListener(new ActionListener() {
+	            @Override
+				public void actionPerformed(ActionEvent e) {
+	            	frame.setVisible(true);
+	            }
+	        });
+		    quitMe.addActionListener(new ActionListener() {
+	            @Override
+				public void actionPerformed(ActionEvent e) {
+	            	System.exit(0);
 	            }
 	        });
 		}
