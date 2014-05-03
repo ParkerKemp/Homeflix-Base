@@ -29,7 +29,7 @@ public class Llamabrarian implements Runnable {
 	static Connection conn = null;
 	static Statement stmt = null;
 
-	public static Path dir = HomeflixBase.myDir;
+	public static Path dir;
 
 	public Llamabrarian() {
 
@@ -37,14 +37,22 @@ public class Llamabrarian implements Runnable {
 
 	@Override
 	public void run() {
+		watchDirectory();
+	}
+	
+	public static void setDirectory(Path directory){
+		dir = directory;
 		connectToDatabase();
 		syncDatabase();
-		watchDirectory();
 	}
 
 	private static void connectToDatabase() {
 		//Establish an SQL connection and create the database
 		//if it's not already there.
+		
+		//In theory, this only needed to be done once.
+		if(conn != null)
+			return;
 		
 		try {
 			String query;
