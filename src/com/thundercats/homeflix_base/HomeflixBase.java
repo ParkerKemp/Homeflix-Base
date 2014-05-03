@@ -216,7 +216,7 @@ public class HomeflixBase {
 		    trayIcon = new TrayIcon(icon, altText, popup);
 		    
 		    MenuItem changeDir = new MenuItem("Change Video Folder");
-		    MenuItem showWindow = new MenuItem("Show Terminal");
+		    MenuItem showWindow = new MenuItem("Show my IP address");
 		    MenuItem quitMe = new MenuItem("Quit Homeflix Base");
 		    
 		    popup.add(changeDir);
