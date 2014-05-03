@@ -117,15 +117,19 @@ public class VLCServer {
 	}
 	
 	public static boolean isWindows32(){
-		return System.getProperty("os.name").toLowerCase().startsWith("win") && System.getProperty("os.arch").toLowerCase().equals("x86");
+		return System.getProperty("os.name").toLowerCase().startsWith("win") && !is64Bit();
 	}
 	
 	public static boolean isWindows64(){
-		return System.getProperty("os.name").toLowerCase().startsWith("win") && System.getProperty("os.arch").toLowerCase().equals("x86_64");
+		return System.getProperty("os.name").toLowerCase().startsWith("win") && is64Bit();
 	}
 	
 	public static boolean isMac(){
 		return System.getProperty("os.name").toLowerCase().startsWith("mac");
+	}
+
+	public static boolean is64Bit(){
+		return System.getProperty("os.arch").toLowerCase().contains("64");
 	}
 
 }
