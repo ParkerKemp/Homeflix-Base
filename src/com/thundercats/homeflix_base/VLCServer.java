@@ -16,10 +16,12 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
+import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_instance_t;
+import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VLCServer {
@@ -95,11 +97,27 @@ public class VLCServer {
 
 	public static void loadNative() {
 		//Load the VLC native library
-		
-		 NativeLibrary.addSearchPath(
-		 RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "/VLC-OSX/lib"
-		 );
-		 /*Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);*/
+//		C:\Program Files\VideoLAN\VLC\
+		//new NativeDiscovery().discover();
+		if(isWindows()){
+			NativeLibrary.addSearchPath(
+					RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "\\VLC-WINDOWS-64\\VLC"
+					);
+		}
+		else if(isMac()){
+			NativeLibrary.addSearchPath(
+					RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "/VLC-OSX/lib"
+					);
+		}
+		// Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+	}
+	
+	public static boolean isWindows(){
+		return System.getProperty("os.name").toLowerCase().startsWith("win");
+	}
+	
+	public static boolean isMac(){
+		return System.getProperty("os.name").toLowerCase().startsWith("mac");
 	}
 
 }

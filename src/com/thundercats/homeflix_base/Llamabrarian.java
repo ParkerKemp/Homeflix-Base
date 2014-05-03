@@ -61,7 +61,7 @@ public class Llamabrarian implements Runnable {
 			stmt.executeQuery(query);
 
 			// Make sure the Library table exists
-			query = "CREATE TABLE IF NOT EXISTS Library(filename VARCHAR(256) PRIMARY KEY, playbackTime VARCHAR(16))";
+			query = "CREATE TABLE IF NOT EXISTS Library(filename VARCHAR(255) PRIMARY KEY, playbackTime VARCHAR(16))";
 			stmt.executeUpdate(query);
 			
 		} catch (Exception e) {
