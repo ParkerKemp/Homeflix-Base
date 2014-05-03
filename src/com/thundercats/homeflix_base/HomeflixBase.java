@@ -239,6 +239,7 @@ public class HomeflixBase {
 	            @Override
 				public void actionPerformed(ActionEvent e) {
 	            	frame.setVisible(true);
+	            	showAddresses();
 	            }
 	        });
 		    quitMe.addActionListener(new ActionListener() {
