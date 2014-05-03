@@ -4,7 +4,7 @@
  * Richie Davidson, Parker Kemp, Colin Page
  * Spring Semester 2014
  * 
- * Monitor a user-specified directory
+ * Monitors a user-specified directory
  * Curates database to reflect this
  * Passes relevant info to ClientThread to update Mobile
  */
@@ -43,6 +43,9 @@ public class Llamabrarian implements Runnable {
 	}
 
 	private static void connectToDatabase() {
+		//Establish an SQL connection and create the database
+		//if it's not already there.
+		
 		try {
 			String query;
 

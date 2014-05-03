@@ -11,101 +11,105 @@
 package com.thundercats.homeflix_base;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 
-public class ClientThread extends Thread{
-	
-	private final String externalIP = "172.31.95.94";
-	
+public class ClientThread extends Thread {
+
 	VLCServer serverInstance = new VLCServer();
-    private Socket conn;
-    private PrintStream out;
-    private BufferedReader in;
-    
-    //public String[] fileNames = new String[] {"Test1.MOV", "Test2.MOV", "test"};//file names to pass to Mobile. Test data used.
-     
-    ClientThread(Socket conn){
-        this.conn = conn;
-    }
- 
-    public void run(){
-        String line;
-        String connectingIP;
-        String [] parsedSentence;
-         
-        try{
-            //get socket writing and reading streams
-            //DataInputStream in = new DataInputStream(conn.getInputStream());
-            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            out = new PrintStream(conn.getOutputStream());
- 
-            //Send welcome message to client
-            //out.println("\r\n" + " Welcome to the Server!");
-            //HomeflixBase.echo("\r\n" + " Welcome to the Server!");
- 
-            //LocalVideoPlayer player; 
-            //Now start reading input from client
-            while((line = in.readLine()) != null && !line.equals(".")){
-            	//HomeflixBase.echo("Client: " + line);
-            	parseRequest(line);
+	private Socket conn;
+	private PrintStream out;
+	private BufferedReader in;
 
-            }
-            
-            HomeflixBase.echo("Connection closed.");
-            
-            //client disconnected, so close socket
-            conn.close();
-        } 
-       
-        catch (IOException e){
-            HomeflixBase.echo("IOException on socket : " + e);
-            e.printStackTrace();
-        }
-    }
-    
-    public boolean parseRequest(String line){
-    	//Return true if a command was processed, or false if it's just arbitrary text data
-    	String[] tokens = line.split(" ");
-    	String command = tokens[0];
-    	
-    	//if message from Mobile is "play x" then make a stream for that file
-    	if(command.equalsIgnoreCase("play") && tokens.length > 1){
-    		HomeflixBase.sysTraySet(HomeflixBase.HFiconPlay, "Playing to Mobile");
-    		String filename = line.substring(5);
-    		HomeflixBase.echo("Trying to play " + filename);
-    		//new VLCStream(filename).init();
-    		serverInstance.startVLCInstance(filename);
-    		out.println("READY " + filename);
-    		return true;
-    	}
-    	
-    	//if message from Mobile is 'Request File List" then send formatted info to Mobile
-    	if(command.equalsIgnoreCase("RequestFileList")){
-    		HomeflixBase.sysTraySet(HomeflixBase.HFiconUD, "Updating Mobile...");//change tray icon to 'updating'
-    		sendFileListToMobile();
-    		HomeflixBase.sysTraySet(HomeflixBase.HFicon, "Homeflix Base");//change tray icon back to normal
-    		return true;
-    	}
-    	
-    	return false;
-    }
-    
-    public void sendFileListToMobile(){
-    	//HomeflixBase.echo("Ground Control receives");
-		//Tell Mobile how many files there are
+	ClientThread(Socket conn) {
+		this.conn = conn;
+	}
 
-    	//String[][] myFileInfo = Llamabrarian.videoList();//get list of files//THIS ONE IS NAME AND TIME
-    	String[] myFileInfo = Llamabrarian.getSqlFileList();//get list of files//THIS ONE IS JUST NAME
+	@Override
+	public void run() {
+		String line;
+		try {
+			// get socket writing and reading streams
+			in = new BufferedReader(
+					new InputStreamReader(conn.getInputStream()));
+			out = new PrintStream(conn.getOutputStream());
+
+			// Continuously read the socket for incoming messages.
+			// readLine() blocks until data is received.
+			while ((line = in.readLine()) != null && !line.equals("."))
+				parseRequest(line);
+
+			// client disconnected, so close socket
+			HomeflixBase.echo("Connection closed.");
+			conn.close();
+		}
+
+		catch (IOException e) {
+			HomeflixBase.echo("IOException on socket : " + e);
+			e.printStackTrace();
+		}
+	}
+
+	public boolean parseRequest(String line) {
+		//Interpret and handle a request from Mobile.
+		//Return true if a command was processed, false otherwise
+
+		String[] tokens = line.split(" ");
+		String command = tokens[0];
+
+		// if message from Mobile is "play x" then make a stream for that file
+		if (command.equalsIgnoreCase("play") && tokens.length > 1) {
+			HomeflixBase.sysTraySet(HomeflixBase.HFiconPlay,
+					"Playing to Mobile");
+			String filename = line.substring(5);
+			HomeflixBase.echo("Trying to play " + filename);
+			// new VLCStream(filename).init();
+			serverInstance.startVLCInstance(filename);
+			out.println("READY " + filename);
+			return true;
+		}
+
+		// if message from Mobile is 'Request File List" then send formatted
+		// info to Mobile
+		if (command.equalsIgnoreCase("RequestFileList")) {
+			
+			//Change tray icon to 'updating'
+			HomeflixBase.sysTraySet(HomeflixBase.HFiconUD, "Updating Mobile...");
+			
+			sendFileListToMobile();
+			
+			//Change tray icon back to normal
+			HomeflixBase.sysTraySet(HomeflixBase.HFicon, "Homeflix Base");
+			return true;
+		}
+
+		//If message from mobile is "stop", then stop the VLC process
+		//to save CPU power (it runs pretty hot)
+		if (command.equalsIgnoreCase("stop")) {
+			serverInstance.stopVLC();
+			return true;
+		}
+
+		return false;
+	}
+
+	public void sendFileListToMobile() {
+		// HomeflixBase.echo("Ground Control receives");
+		// Tell Mobile how many files there are
+
+		// String[][] myFileInfo = Llamabrarian.videoList();//get list of
+		// files//THIS ONE IS NAME AND TIME
+		String[] myFileInfo = Llamabrarian.getSqlFileList();// get list of
+															// files//THIS ONE
+															// IS JUST NAME
 		out.println("FILE " + myFileInfo.length);
-		//Then one by one, name each file and file play length
-		for(int i=0; i<myFileInfo.length; i++)
-		{
-            //out.println("FILE " + myFileInfo[i][0] + ";" + myFileInfo[i][1]);//THIS ONE IS NAME AND TIME
-			out.println("FILE " + myFileInfo[i]);//THIS ONE IS JUST NAME
-        }
-    }
+		// Then one by one, name each file and file play length
+		for (int i = 0; i < myFileInfo.length; i++) {
+			// out.println("FILE " + myFileInfo[i][0] + ";" +
+			// myFileInfo[i][1]);//THIS ONE IS NAME AND TIME
+			out.println("FILE " + myFileInfo[i]);// THIS ONE IS JUST NAME
+		}
+	}
 }

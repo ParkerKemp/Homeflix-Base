@@ -4,6 +4,8 @@
  * Richie Davidson, Parker Kemp, Colin Page
  * Spring Semester 2014
  * 
+ * Infinite loop that accepts incoming connections
+ * and starts up a new thread for each one
  * 
  */
 
@@ -22,40 +24,35 @@ public class ServerThread implements Runnable{
 	
 	@Override
 	public void run(){
-		init();
-	}
-	
-    public void init(){
         ServerSocket s = null;
         Socket conn = null;
          
         try{
-        	//creating a server socket - 1st parameter is port number and 2nd is the backlog
+        	//Create a new server socket
             s = new ServerSocket(port);
-            //Wait for an incoming connection
-            //HomeflixBase.echo("Server socket created. Listening on port " + port + "...\n");
+            
+            //Wait for incoming connections
             HomeflixBase.echo("Homeflix Base server online and waiting for incoming connections");
             while(true){
-                //get the connection socket
+                
+            	//Get a connection socket (accept() blocks until connection is received)
                 conn = s.accept();
                  
-                //print the hostname and port number of the connection
+                //Print connection information
                 HomeflixBase.echo("Connection received from " + conn.getInetAddress().getHostName() + " : " + conn.getPort() + "\n");
                 
-                //create new thread to handle client
+                //Start a new thread to handle the client
                 new ClientThread(conn).start();
             }
         }
-         
         catch(Exception e){
             System.out.println(e.toString());
         }
-         
-        //5. close the connections and stream
+        
         try{
+        	//Close the socket
             s.close();
         }
-         
         catch(IOException ioException){
             System.err.println("Unable to close. IOexception");
         }

@@ -1,67 +1,88 @@
+/*Homeflix-Base: VLCServer
+ * 
+ * Homeflix project for WKU CS496
+ * Richie Davidson, Parker Kemp, Colin Page
+ * Spring Semester 2014
+ * 
+ * Create a new VLC instance to stream a video.
+ * Only one at a time per client (see
+ * ClientThread implementation).
+ * 
+ */
+
 package com.thundercats.homeflix_base;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
+import com.sun.jna.NativeLibrary;
+
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_instance_t;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
-public class VLCServer{
+public class VLCServer {
 
-	//String filename;
-	private libvlc_instance_t instance;
-	
-	public VLCServer(){
+	private libvlc_instance_t instance = null;
+
+	public VLCServer() {
 	}
-	
-	public void startVLCInstance(String filename){
+
+	public void startVLCInstance(String filename) {
+		//Destroy the previous VLC instance if necessary, and
+		//start a new one that streams the given file
 		
-		if(instance != null){
+		//Stop the previous instance (if it exists)
+		stopVLC();
+
+		//Generate a config file specifying how the video should be streamed
+		generateConfigFile(filename);
+
+		//Arguments to pass to VLC
+		String[] libVlcArgs = { "-vvv", "--vlm-conf=vod.conf",
+				"--rtsp-port=2464", "--sout-avcodec-strict=-2",
+				"--rtsp-timeout=0" };
+
+		//Start VLC
+		instance = LibVlc.SYNC_INSTANCE.libvlc_new(5, libVlcArgs);
+
+	}
+
+	public void stopVLC() {
+		//If instance is non-null, then destroy it
+		
+		if (instance != null) {
 			LibVlc.SYNC_INSTANCE.libvlc_release(instance);
 			instance = null;
 		}
-		
-		generateConfigFile(filename);
-		
-		//String[] libVlcArgs = {"-vvv", "--intf=rc", "--telnet-port=2465", "--telnet-password=videolan", "--rtsp-port=2464", "--sout-avcodec-strict=-2", "--rtsp-timeout=0"};
-		String[] libVlcArgs = {"-vvv", "--vlm-conf=vod.conf", "--rtsp-port=2464", "--sout-avcodec-strict=-2", "--rtsp-timeout=0"};//, "--packetizer=packetizer_mpeg4video"};
-	    
-		//LibVlc.SYNC_INSTANCE.libvlc_release(instance);
-        instance = LibVlc.SYNC_INSTANCE.libvlc_new(5, libVlcArgs);
-        //LibVlc.SYNC_INSTANCE.libvlc_add_intf(instance, "rc");
-        
-        //String[] vodArgs = {":sout=#transcode{vcodec=mp4v,acodec=mp4a}:gather", "--sout-keep", "--no-sout-rtp-sap", "--no-sout-standard-sap"};
-        //LibVlc.SYNC_INSTANCE.libvlc_vlm_add_vod(instance, "Test", "/Users/iamparker/Desktop/Homeflix-vids/django.avi", 4, vodArgs, 1, "mp2t");
-        //LibVlc.SYNC_INSTANCE.libvlc_release(instance);
-        //if(instance == null)
-        //	HomeflixBase.echo("Instance is null");
-        //else
-        //	HomeflixBase.echo("Instance is non-null");
-       /* try {
-			Thread.currentThread().join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		
 	}
-	
-	public void generateConfigFile(String filename){
+
+	public void generateConfigFile(String filename) {
+		//Create a config file called vod.conf. This file conforms 
+		//to a format specified by VLC, and defines parameters for
+		//the outgoing stream
+		
 		PrintWriter writer;
 		try {
+			//Create/overwrite vod.conf
 			writer = new PrintWriter("vod.conf", "UTF-8");
-			
-			String compliantName = filename.replace(' ','_');
-			
+
+			//Replace spaces in filename with underscores (spaces are problematic)
+			String compliantName = filename.replace(' ', '_');
+
+			//Write the configurations
 			writer.println("new " + compliantName + " vod disabled");
-			writer.println("setup " + compliantName + " output #transcode{vcodec=h264,acodec=mp4a}:gather");
-			writer.println("setup " + compliantName + " input \"" + Llamabrarian.dir.toString() + "/" + filename + "\"");
+			writer.println("setup " + compliantName
+					+ " output #transcode{vcodec=h264,acodec=mp4a}:gather");
+			writer.println("setup " + compliantName + " input \""
+					+ Llamabrarian.dir.toString() + "/" + filename + "\"");
 			writer.println("setup " + compliantName + " option sout-keep");
 			writer.println("setup " + compliantName + " option no-sout-rtp-sap");
-			writer.println("setup " + compliantName + " option no-sout-standard-sap");
+			writer.println("setup " + compliantName
+					+ " option no-sout-standard-sap");
 			writer.println("setup " + compliantName + " enabled");
-			
+
 			writer.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -70,6 +91,15 @@ public class VLCServer{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
+
+	public static void loadNative() {
+		//Load the VLC native library
+		
+		 NativeLibrary.addSearchPath(
+		 RuntimeUtil.getLibVlcLibraryName(), System.getProperty("user.dir") + "/VLC-OSX/lib"
+		 );
+		 /*Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);*/
+	}
+
 }

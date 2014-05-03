@@ -14,24 +14,18 @@ import java.awt.Image;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
-import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -44,16 +38,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
-import uk.co.caprica.vlcj.player.manager.MediaManager;
-
-import com.xuggle.xuggler.Converter;
-
 public class HomeflixBase {
 	
 	private static final int port = 2463;
-	private static final int rtspPort = 2464;
+	private static JFrame frame;
 	public static JTextArea textArea;
-	MediaManager manager;
 	
 	//Tray Icon prep
 	public static SystemTray tray = SystemTray.getSystemTray();
@@ -68,43 +57,34 @@ public class HomeflixBase {
 	public static Path myDir;//Directory of the video library, NOT the working dir
 	
 	public static void main(String[] args){
-		Logger.setLogFile("log.txt");
-		
-		//String[] files = {"/Users/iamparker/Desktop/Movies/manfromearth.mp4"};
-		
-		
-		JFrame frame = new JFrame();
-		textArea = new JTextArea();
+		//Create system tray icon
 		sysTraySet(HFicon, "Homeflix Base");
 		
-		//try {
-		//	Process process = Runtime.getRuntime().exec("cd external-jars/MacOS;./vlc --ttl 12 -vvv --color -I telnet --telnet-port 2465 --telnet-password videolan --rtsp-port 2464");
-		//} catch (IOException e) {
-			// TODO Auto-generated catch block
-		//	e.printStackTrace();
-		//}
-		
-		VLCStream.loadNative();
+		//Load VLC native library
+		VLCServer.loadNative();
 
-		//System.out.println(new MediaInfo("/Users/iamparker/Desktop/Homeflix-vids/django.avi").getLength());
-
-		//VLCStream.startTelnetServer();
-		//new Thread(new VLCServer("/Users/iamparker/Desktop/Homeflix-vids/django.avi")).start();
-		//new VLCServer().startVLCInstance("/Users/iamparker/Desktop/Homeflix-vids/django.avi");
-		//new Thread(new VLCStream("Test")).start();
-		//VLCStream.launchStream("Test");//"/Users/iamparker/Desktop/Movies/django.avi");
-		
-		new Thread(new CheckOwnIP()).start();
-		
 		//Directory setup
 		//Check if user has already established settings, if not, create them.
 		directoryConnect();
-		//chooseDirectory();//must choose directory BEFORE Llamabrarian is initialized
 		
+		//Wake up Llamabrarian with a bucket of water, yell at him to get back to work
 		new Thread(new Llamabrarian()).start();
 		
-		//new Thread(new VLCStream("/Users/iamparker/Desktop/Movies/manfromearth.mp4", "172.31.77.246", rtspPort)).start();
+		createServerWindow();
 		
+		greetUser();
+		
+		//Start the server thread
+		new Thread(null, new ServerThread(port), "Server-Thread").start();
+	}
+	
+	private static void createServerWindow(){
+
+		frame = new JFrame();
+		textArea = new JTextArea();
+		
+		//Create a scroll pane, allowing the user to scroll up and down
+		//once the text fills up the window
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		
 		textArea.setEditable(false);
@@ -117,7 +97,9 @@ public class HomeflixBase {
 		frame.setSize(600,400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
-		
+	}
+	
+	private static void greetUser(){
 		echo("Starting Homeflix Base.\n");
 		
 		echo("Home directory chosen: " + myDir + "\n");
@@ -127,23 +109,25 @@ public class HomeflixBase {
         HomeflixBase.showAddresses();
         
 		showInstructions();
-		
-		new Thread(null, new ServerThread(port), "Server-Thread").start();
 	}
 	
 	public static void showAddresses(){
+		//Retrieve a list of IPv4 addresses and display them in the server window
+		
 		ArrayList<InetAddress> addresses = getLocalAddresses();
+		
 		if(addresses.size() == 0)
 			echo("No IPv4 addresses found!");
 		else
 			echo("Type one of the following into the top field on Homeflix Mobile, then press Send: ");
+		
 		for(int i = 0; i < addresses.size(); i++)
 			echo(addresses.get(i).getHostAddress());
-		echo("");
 	}
 	
 	public static void showInstructions(){
-		//echo("To play a video, first connect with Homeflix Mobile. In the message textbox on the app, send \"play <filename>\", where <filename> is the name of a file in the same directory as Homeflix-Base.jar.\n");
+		//Display some instructions on how to use Homeflix
+		
 		echo("Once connected, Homeflix Mobile will display a list of the playable files in your chosen folder.");
 		echo("To change your folder, right click the HF system tray icon and select 'Change Video Folder'.");
 		echo("");
@@ -154,48 +138,42 @@ public class HomeflixBase {
 	}
 	
 	public static void echo(String msg){
+		//Print a string in System.out and the server window
+		
 		System.out.println(msg);
 		textArea.append(msg + "\n");
 	}
 	
 	public static ArrayList<InetAddress> getLocalAddresses(){
+		//Iterate through all available network interfaces and try
+		//to find valid outgoing IPv4 addresses
 		
 		ArrayList<InetAddress> inet4Addresses = new ArrayList<InetAddress>();
 		try {
 			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 			while (interfaces.hasMoreElements()){
-				//echo("Checking next interface...");
-			    NetworkInterface current = interfaces.nextElement();
-			    //System.out.println(current);
-			    if (!current.isUp() || current.isLoopback()){// || current.isVirtual()){
-			    	//echo("Network interface is down, or is a loopback interface or virtual interface. Skipping.");
+				NetworkInterface current = interfaces.nextElement();
+			    if (!current.isUp() || current.isLoopback())
 			    	continue;
-			    }
 			    Enumeration<InetAddress> addresses = current.getInetAddresses();
 			    while (addresses.hasMoreElements()){
-			    	//echo("Checking next address...");
-			        InetAddress current_addr = addresses.nextElement();
-			        if(current_addr.isLoopbackAddress()){
-			        	//echo("Skipping loopback address.");
+			    	InetAddress current_addr = addresses.nextElement();
+			        if(current_addr.isLoopbackAddress())
 			        	continue;
-			        }
-			        if(current_addr instanceof Inet4Address){
-			        	//echo("Found a valid address at " + current_addr.getHostAddress());
+			        if(current_addr instanceof Inet4Address)
 			        	inet4Addresses.add(current_addr);
-			        }
-			        	//return current_addr;
 			    }
 			}
 		} catch (SocketException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		//echo("");
 		return inet4Addresses;
 	}
 	
 	public static void chooseDirectory(){
-		//echo("choose dir");
+		//Open a dialog window allowing the user to browse their computer
+		//and pick a directory as their video library directory
+		
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		fc.setDialogTitle("Directory Chooser");
 		fc.setAcceptAllFileFilterUsed(false);
@@ -224,6 +202,8 @@ public class HomeflixBase {
 	}
 	
 	public static void sysTraySet(Image icon, String altText){
+		//Set the system tray icon
+		
 		if (SystemTray.isSupported()) {
 		    //delete any old trayIcons before altering
 		    tray.remove(trayIcon);
@@ -242,7 +222,8 @@ public class HomeflixBase {
 		    }
 		    
 		    changeDir.addActionListener(new ActionListener() {
-	            public void actionPerformed(ActionEvent e) {
+	            @Override
+				public void actionPerformed(ActionEvent e) {
 	            	chooseDirectory();
 	            	System.out.println("User click Change directory.");
 	            }
@@ -299,6 +280,9 @@ public class HomeflixBase {
 	*/
 	
 	public static void directoryConnect(){
+		//Check if the user had previously chosen a library directory;
+		//if not, open a dialog window prompting them to choose one.
+		
 		//Check if preference file exists, use it/create it
 		File prefFile = new File(System.getProperty("user.dir") + File.separator + "prefs.txt");
 		if (prefFile.isFile() && prefFile.canRead()){//if the file exists
