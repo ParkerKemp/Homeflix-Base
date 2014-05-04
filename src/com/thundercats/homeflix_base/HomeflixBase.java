@@ -37,6 +37,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
+
 public class HomeflixBase {
 	
 	private static final int port = 2463;
@@ -173,6 +178,19 @@ public class HomeflixBase {
 		return inet4Addresses;
 	}
 	
+	public static void chooseDir(){
+		Display display = new Display();
+	    Shell shell = new Shell(display);
+	    shell.setText("Directory Browser");
+	    shell.pack();
+	    shell.open();
+	    
+		DirectoryDialog dialog = new DirectoryDialog(shell);
+		dialog.setFilterPath(null);
+		String choice = dialog.open();
+		System.out.println(choice);
+	}
+	
 	public static void chooseDirectory(){
 		//Open a dialog window allowing the user to browse their computer
 		//and pick a directory as their video library directory
@@ -181,7 +199,7 @@ public class HomeflixBase {
 		fc.setDialogTitle("Directory Chooser");
 		fc.setAcceptAllFileFilterUsed(false);
 		//returnVal = fc.showDialog(textArea, "Select your video library directory");
-		
+		echo("2");
 		if (fc.showDialog(textArea, "Select") == JFileChooser.APPROVE_OPTION) { 
 			System.out.println("getCurrentDirectory(): " + fc.getCurrentDirectory());
 			System.out.println("getSelectedFile() : " + fc.getSelectedFile());
@@ -266,54 +284,6 @@ public class HomeflixBase {
 		}
 	}
 	
-	//This was redundant code for testing and is to-be-deleted once sysTraySet is finished absorbing their uses
-	/*
-	public static void sysTrayUpdate(){
-		if (SystemTray.isSupported()) {
-			tray.remove(trayIcon);
-		    PopupMenu popup = new PopupMenu();
-		    trayIcon = new TrayIcon(HFiconUD, "Updating Mobile app...", popup);
-		    try {
-		        tray.add(trayIcon);
-		    } catch (AWTException e) {
-		        System.err.println(e);
-		    }
-		} 
-		else {
-		}
-	}
-	
-	public static void sysTrayNormal(){
-		if (SystemTray.isSupported()) {
-			tray.remove(trayIcon);
-		    PopupMenu popup = new PopupMenu();
-		    trayIcon = new TrayIcon(HFicon, "Homeflix Base", popup);
-		    try {
-		        tray.add(trayIcon);
-		    } catch (AWTException e) {
-		        System.err.println(e);
-		    }
-		} 
-		else {
-		}
-	}
-	
-	public static void sysTrayPlaying(){
-		if (SystemTray.isSupported()) {
-			tray.remove(trayIcon);
-		    PopupMenu popup = new PopupMenu();
-		    trayIcon = new TrayIcon(HFiconPlay, "Streaming to Mobile", popup);
-		    try {
-		        tray.add(trayIcon);
-		    } catch (AWTException e) {
-		        System.err.println(e);
-		    }
-		} 
-		else {
-		}
-	}
-	*/
-	
 	public static void directoryConnect(){
 		//Check if the user had previously chosen a library directory;
 		//if not, open a dialog window prompting them to choose one.
@@ -346,7 +316,9 @@ public class HomeflixBase {
 			echo("Unable to find preferences file. Please select your video directory.");
 			echo("");
 			Llamabrarian.setDirectory(Paths.get(System.getProperty("user.dir")));
-			chooseDirectory();
+			echo("1");
+			//chooseDirectory();
+			chooseDir();
 		}
 	}
 }
