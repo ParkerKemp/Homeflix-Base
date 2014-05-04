@@ -11,32 +11,28 @@
 package com.thundercats.homeflix_base;
 
 import java.io.File;
+import java.util.List;
+
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.TrackInfo;
+import uk.co.caprica.vlcj.player.TrackType;
 
 public class MediaInfo{
 	
 	//Volatile to allow busy waiting code without being optimized out 
 	private volatile long playbackLength = -2;
-	private String path, filename;
+	private String path, filename, videoCodec, audioCodec;
 	
 	public MediaInfo(String path, String filename){
 		this.path = path;
 		this.filename = filename;
-		getLength();
+		parseFile();
 	}
 	
-	public String getFilename(){
-		return filename;
-	}
-	
-    public long getLength() {
-    	//If playbackLength has already been determined, then return it.
-    	//Otherwise, extract it from the video file
-    	
-    	if(playbackLength > 0)
-    		return playbackLength;
+    public void parseFile() {
+    	//Parse the file for metadata
     	
     	//Start a temporary VLC instance (different technique than was used in VLCServer.java)
     	MediaPlayerFactory factory = new MediaPlayerFactory("--vout", "dummy");
@@ -59,6 +55,15 @@ public class MediaInfo{
         //Parse the file
         mediaPlayer.parseMedia();
         
+        List<TrackInfo> vidTracks = mediaPlayer.getTrackInfo(TrackType.VIDEO);
+        List<TrackInfo> audTracks = mediaPlayer.getTrackInfo(TrackType.AUDIO);
+        
+        //Extract the video/audio codecs
+        if(!vidTracks.isEmpty())
+        	videoCodec = vidTracks.get(0).codecName();
+        if(!audTracks.isEmpty())
+        	audioCodec = audTracks.get(0).codecName();
+        
         //Try to "play" the video in the background (this is necessary to get certain data)
         mediaPlayer.start();
         
@@ -68,8 +73,6 @@ public class MediaInfo{
         
         mediaPlayer.release();
         factory.release();
-        
-        return playbackLength;
     }
     
     public boolean isValid(){
@@ -81,5 +84,21 @@ public class MediaInfo{
 
 	public void setLength(long length){
 		playbackLength = length;
+	}
+
+	public String getFilename(){
+		return filename;
+	}
+	
+	public long getPlaybackLength(){
+		return playbackLength;
+	}
+	
+	public String getVideoCodec(){
+		return videoCodec;
+	}
+	
+	public String getAudioCodec(){
+		return audioCodec;
 	}
 }

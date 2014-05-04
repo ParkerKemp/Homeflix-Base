@@ -58,14 +58,19 @@ public class ClientThread extends Thread {
 
 		String[] tokens = line.split(" ");
 		String command = tokens[0];
-
+		
+		//If message from Mobile starts with "info", then return information about that video
+		if (command.equalsIgnoreCase("info")){
+			String filename = line.substring(5);
+			out.println("INFO " + Llamabrarian.infoString(filename));
+			return true;
+		}
+		
 		// if message from Mobile is "play x" then make a stream for that file
 		if (command.equalsIgnoreCase("play") && tokens.length > 1) {
 			HomeflixBase.sysTraySet(HomeflixBase.HFiconPlay,
 					"Playing to Mobile");
 			String filename = line.substring(5);
-			HomeflixBase.echo("Trying to play " + filename);
-			// new VLCStream(filename).init();
 			serverInstance.startVLCInstance(filename);
 			out.println("READY " + filename);
 			return true;
@@ -97,20 +102,12 @@ public class ClientThread extends Thread {
 	}
 
 	public void sendFileListToMobile() {
-		// HomeflixBase.echo("Ground Control receives");
 		// Tell Mobile how many files there are
 
-		// String[][] myFileInfo = Llamabrarian.videoList();//get list of
-		// files//THIS ONE IS NAME AND TIME
-		String[] myFileInfo = Llamabrarian.getSqlFileList();// get list of
-															// files//THIS ONE
-															// IS JUST NAME
+		String[] myFileInfo = Llamabrarian.getSqlFileList();
 		out.println("FILE " + myFileInfo.length);
 		// Then one by one, name each file and file play length
-		for (int i = 0; i < myFileInfo.length; i++) {
-			// out.println("FILE " + myFileInfo[i][0] + ";" +
-			// myFileInfo[i][1]);//THIS ONE IS NAME AND TIME
-			out.println("FILE " + myFileInfo[i]);// THIS ONE IS JUST NAME
-		}
+		for (int i = 0; i < myFileInfo.length; i++)
+			out.println("FILE " + myFileInfo[i]);
 	}
 }

@@ -16,12 +16,10 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 
-import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_instance_t;
-import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 public class VLCServer {

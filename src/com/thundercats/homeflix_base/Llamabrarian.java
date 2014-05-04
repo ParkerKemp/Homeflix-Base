@@ -69,7 +69,7 @@ public class Llamabrarian implements Runnable {
 			stmt.executeQuery(query);
 
 			// Make sure the Library table exists
-			query = "CREATE TABLE IF NOT EXISTS Library(filename VARCHAR(255) PRIMARY KEY, playbackTime VARCHAR(16))";
+			query = "CREATE TABLE IF NOT EXISTS Library(filename VARCHAR(255) PRIMARY KEY, playbackTime VARCHAR(16), videoCodec VARCHAR(16), audioCodec VARCHAR(16))";
 			stmt.executeUpdate(query);
 			
 		} catch (Exception e) {
@@ -152,17 +152,21 @@ public class Llamabrarian implements Runnable {
 		
 		MediaInfo temp = new MediaInfo(dir.toString(), filename);
 		if (temp.isValid())
-			insertIntoDB(temp.getFilename(), temp.getLength());
+			insertIntoDB(temp.getFilename(), temp.getPlaybackLength(), temp.getVideoCodec(), temp.getAudioCodec());
 	}
 
-	private static void insertIntoDB(String filename, long playbackTime) {
+	private static void insertIntoDB(String filename, long playbackTime, String videoCodec, String audioCodec) {
 		//Insert a new row into the database
 		
 		try {
-			String query = "INSERT INTO Library (filename, playbackTime) VALUES ('"
+			String query = "INSERT INTO Library (filename, playbackTime, videoCodec, audioCodec) VALUES ('"
 					+ filename
 					+ "', '"
 					+ timeString(playbackTime)
+					+ "', '"
+					+ videoCodec
+					+ "', '"
+					+ audioCodec
 					+ "') ON DUPLICATE KEY UPDATE "
 					+ "filename = '"
 					+ filename
@@ -171,6 +175,22 @@ public class Llamabrarian implements Runnable {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static String infoString(String filename){
+		String query = "SELECT * FROM Library WHERE filename = '" + filename + "'";
+		String ret = "";
+		try {
+			ResultSet rs = stmt.executeQuery(query);
+			rs.first();
+			ret += rs.getString("filename") + ";";
+			ret += rs.getString("playbackTime") + ";";
+			ret += rs.getString("videoCodec") + ";";
+			ret += rs.getString("audioCodec");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ret;
 	}
 	
 	private static String timeString(long milli){
