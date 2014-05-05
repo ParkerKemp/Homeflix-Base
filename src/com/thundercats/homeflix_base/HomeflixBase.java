@@ -115,7 +115,7 @@ public class HomeflixBase {
 		showInstructions();
 	}
 	
-	public static void showAddresses(){
+	private static void showAddresses(){
 		//Retrieve a list of IPv4 addresses and display them in the server window
 		
 		ArrayList<InetAddress> addresses = getLocalAddresses();
@@ -131,7 +131,7 @@ public class HomeflixBase {
 		echo("");
 	}
 	
-	public static void showInstructions(){
+	private static void showInstructions(){
 		//Display some instructions on how to use Homeflix
 		
 		echo("Once connected, Homeflix Mobile will display a list of the playable files in your chosen folder.");
@@ -152,7 +152,7 @@ public class HomeflixBase {
 		textArea.append(msg + "\n");
 	}
 	
-	public static ArrayList<InetAddress> getLocalAddresses(){
+	private static ArrayList<InetAddress> getLocalAddresses(){
 		//Iterate through all available network interfaces and try
 		//to find valid outgoing IPv4 addresses
 		
@@ -178,6 +178,7 @@ public class HomeflixBase {
 		return inet4Addresses;
 	}
 	
+<<<<<<< HEAD
 	public static void chooseDir(){
 		Display display = new Display();
 	    Shell shell = new Shell(display);
@@ -192,6 +193,9 @@ public class HomeflixBase {
 	}
 	
 	public static void chooseDirectory(){
+=======
+	private static void chooseDirectory(){
+>>>>>>> master
 		//Open a dialog window allowing the user to browse their computer
 		//and pick a directory as their video library directory
 		
@@ -284,7 +288,11 @@ public class HomeflixBase {
 		}
 	}
 	
+<<<<<<< HEAD
 	public static void directoryConnect(){
+=======
+	private static void directoryConnect(){
+>>>>>>> master
 		//Check if the user had previously chosen a library directory;
 		//if not, open a dialog window prompting them to choose one.
 		

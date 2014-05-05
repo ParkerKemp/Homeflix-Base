@@ -19,8 +19,6 @@ import java.sql.*;
 
 public class Llamabrarian implements Runnable {
 
-	static ArrayList<MediaInfo> mediaInfo = new ArrayList<MediaInfo>();
-
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	static final String DB_URL = "jdbc:mysql://localhost";
 	static final String USER = "root";
