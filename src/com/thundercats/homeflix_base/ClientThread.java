@@ -18,7 +18,7 @@ import java.net.Socket;
 
 public class ClientThread extends Thread {
 
-	VLCServer serverInstance = new VLCServer();
+	private VLCServer serverInstance = new VLCServer();
 	private Socket conn;
 	private PrintStream out;
 	private BufferedReader in;

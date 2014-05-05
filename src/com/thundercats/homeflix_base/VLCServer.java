@@ -58,7 +58,7 @@ public class VLCServer {
 		}
 	}
 
-	public void generateConfigFile(String filename) {
+	private void generateConfigFile(String filename) {
 		//Create a config file called vod.conf. This file conforms 
 		//to a format specified by VLC, and defines parameters for
 		//the outgoing stream
@@ -114,19 +114,19 @@ public class VLCServer {
 			System.out.println("Unable to identify platform!!!");
 	}
 	
-	public static boolean isWindows32(){
+	private static boolean isWindows32(){
 		return System.getProperty("os.name").toLowerCase().startsWith("win") && !is64Bit();
 	}
 	
-	public static boolean isWindows64(){
+	private static boolean isWindows64(){
 		return System.getProperty("os.name").toLowerCase().startsWith("win") && is64Bit();
 	}
 	
-	public static boolean isMac(){
+	private static boolean isMac(){
 		return System.getProperty("os.name").toLowerCase().startsWith("mac");
 	}
 
-	public static boolean is64Bit(){
+	private static boolean is64Bit(){
 		return System.getProperty("os.arch").toLowerCase().contains("64");
 	}
 
