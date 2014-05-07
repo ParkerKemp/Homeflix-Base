@@ -10,6 +10,5 @@
 	<classpathentry kind="lib" path="external-jars/vlc/vlcj-3.0.1-tests.jar"/>
 	<classpathentry kind="lib" path="external-jars/vlc/vlcj-3.0.1.jar"/>
 	<classpathentry kind="lib" path="external-jars/mysql-connector-java-5.1.30-bin.jar"/>
-	<classpathentry kind="lib" path="external-jars/swt/osx/swt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

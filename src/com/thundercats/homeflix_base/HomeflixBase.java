@@ -35,105 +35,109 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.text.DefaultCaret;
 
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
+//import org.eclipse.swt.widgets.DirectoryDialog;
+//import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.widgets.Shell;
 
 public class HomeflixBase {
-	
+
 	private static final int port = 2463;
 	private static JFrame frame;
 	public static JTextArea textArea;
-	
-	//Tray Icon prep
+
+	// Tray Icon prep
 	public static SystemTray tray = SystemTray.getSystemTray();
 	public static TrayIcon trayIcon;
-	public static Image HFicon = new ImageIcon("src/resources/HFiconLR.png").getImage();
-	public static Image HFiconUD = new ImageIcon("src/resources/HFiconUpdateLR.png").getImage();
-	public static Image HFiconPlay = new ImageIcon("src/resources/HFiconPlayingLR.png").getImage();
-	
-	//File Chooser prep
+	public static Image HFicon = new ImageIcon("resources/HFiconLR.png")
+			.getImage();
+	public static Image HFiconUD = new ImageIcon(
+			"resources/HFiconUpdateLR.png").getImage();
+	public static Image HFiconPlay = new ImageIcon(
+			"resources/HFiconPlayingLR.png").getImage();
+
+	// File Chooser prep
 	public static int returnVal;
 	public static final JFileChooser fc = new JFileChooser();
-	//public static Path myDir;//Directory of the video library, NOT the working dir
-	
-	public static void main(String[] args){
-		//Create system tray icon
+
+	public static void main(String[] args) {
+		// Create system tray icon
 		sysTraySet(HFicon, "Homeflix Base");
-		
-		//Load VLC native library
+
+		// Load VLC native library
 		VLCServer.loadNative();
-		
+
 		createServerWindow();
 
-		//Directory setup
-		//Check if user has already established settings, if not, create them.
+		// Directory setup
+		// Check if user has already established settings, if not, create them.
 		directoryConnect();
-		
-		//Wake up Llamabrarian with a bucket of water, yell at him to get back to work
+
+		// Wake up Llamabrarian with a bucket of water, yell at him to get back
+		// to work
 		new Thread(new Llamabrarian()).start();
-		
+
 		greetUser();
-		
-		//Start the server thread
+
+		// Start the server thread
 		new Thread(null, new ServerThread(port), "Server-Thread").start();
 	}
-	
-	private static void createServerWindow(){
+
+	private static void createServerWindow() {
 
 		frame = new JFrame();
 		textArea = new JTextArea();
-		
-		//Create a scroll pane, allowing the user to scroll up and down
-		//once the text fills up the window
+
+		// Create a scroll pane, allowing the user to scroll up and down
+		// once the text fills up the window
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		
+
 		textArea.setEditable(false);
-		DefaultCaret caret = (DefaultCaret)textArea.getCaret();
+		DefaultCaret caret = (DefaultCaret) textArea.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		frame.add(scrollPane);
-		
-		frame.setSize(600,400);
-		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+		frame.setSize(600, 400);
+		frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		frame.setVisible(true);
 	}
-	
-	private static void greetUser(){
+
+	private static void greetUser() {
 		echo("Starting Homeflix Base.\n");
-		
-		echo("Home directory chosen: " + Llamabrarian.dir + "\n");
-		
+
 		echo("Homeflix server started.\n");
-		HomeflixBase.echo("Make sure your mobile device is on the same Wifi network as your home computer, then connect to Base.\n");
-        HomeflixBase.showAddresses();
-        
+		HomeflixBase
+				.echo("Make sure your mobile device is on the same Wifi network as your home computer, then connect to Base.\n");
+		HomeflixBase.showAddresses();
+
 		showInstructions();
 	}
-	
-	private static void showAddresses(){
-		//Retrieve a list of IPv4 addresses and display them in the server window
-		
+
+	private static void showAddresses() {
+		// Retrieve a list of IPv4 addresses and display them in the server
+		// window
+
 		ArrayList<InetAddress> addresses = getLocalAddresses();
-		
-		if(addresses.size() == 0)
+
+		if (addresses.size() == 0)
 			echo("No IPv4 addresses found!");
 		else
 			echo("Type one of the following into the top field on Homeflix Mobile, then press Send: ");
-		
-		for(int i = 0; i < addresses.size(); i++)
+
+		for (int i = 0; i < addresses.size(); i++)
 			echo(addresses.get(i).getHostAddress());
-		
+
 		echo("");
 	}
-	
-	private static void showInstructions(){
-		//Display some instructions on how to use Homeflix
-		
+
+	private static void showInstructions() {
+		// Display some instructions on how to use Homeflix
+
 		echo("Once connected, Homeflix Mobile will display a list of the playable files in your chosen folder.");
 		echo("To change your folder, right click the HF system tray icon and select 'Change Video Folder'.");
 		echo("");
@@ -144,189 +148,174 @@ public class HomeflixBase {
 		echo("You may now close this window and Homeflix Base will continue running.");
 		echo("");
 	}
-	
-	public static void echo(String msg){
-		//Print a string in System.out and the server window
-		
+
+	public static void echo(String msg) {
+		// Print a string in System.out and the server window
+
 		System.out.println(msg);
 		textArea.append(msg + "\n");
 	}
-	
-	private static ArrayList<InetAddress> getLocalAddresses(){
-		//Iterate through all available network interfaces and try
-		//to find valid outgoing IPv4 addresses
-		
+
+	private static ArrayList<InetAddress> getLocalAddresses() {
+		// Iterate through all available network interfaces and try
+		// to find valid outgoing IPv4 addresses
+
 		ArrayList<InetAddress> inet4Addresses = new ArrayList<InetAddress>();
 		try {
-			Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-			while (interfaces.hasMoreElements()){
+			Enumeration<NetworkInterface> interfaces = NetworkInterface
+					.getNetworkInterfaces();
+			while (interfaces.hasMoreElements()) {
 				NetworkInterface current = interfaces.nextElement();
-			    if (!current.isUp() || current.isLoopback())
-			    	continue;
-			    Enumeration<InetAddress> addresses = current.getInetAddresses();
-			    while (addresses.hasMoreElements()){
-			    	InetAddress current_addr = addresses.nextElement();
-			        if(current_addr.isLoopbackAddress())
-			        	continue;
-			        if(current_addr instanceof Inet4Address)
-			        	inet4Addresses.add(current_addr);
-			    }
+				if (!current.isUp() || current.isLoopback())
+					continue;
+				Enumeration<InetAddress> addresses = current.getInetAddresses();
+				while (addresses.hasMoreElements()) {
+					InetAddress current_addr = addresses.nextElement();
+					if (current_addr.isLoopbackAddress())
+						continue;
+					if (current_addr instanceof Inet4Address)
+						inet4Addresses.add(current_addr);
+				}
 			}
 		} catch (SocketException e1) {
 			e1.printStackTrace();
 		}
 		return inet4Addresses;
 	}
-	
-<<<<<<< HEAD
-	public static void chooseDir(){
-		Display display = new Display();
-	    Shell shell = new Shell(display);
-	    shell.setText("Directory Browser");
-	    shell.pack();
-	    shell.open();
-	    
-		DirectoryDialog dialog = new DirectoryDialog(shell);
-		dialog.setFilterPath(null);
-		String choice = dialog.open();
-		System.out.println(choice);
-	}
-	
-	public static void chooseDirectory(){
-=======
-	private static void chooseDirectory(){
->>>>>>> master
-		//Open a dialog window allowing the user to browse their computer
-		//and pick a directory as their video library directory
+
+	private static void chooseDirectory() {
+		// Open a dialog window allowing the user to browse their computer
+		// and pick a directory as their video library directory
+
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				fc.setDialogTitle("Directory Chooser");
+				fc.setAcceptAllFileFilterUsed(false);
+				
+				// "Select your video library directory");
+				if (fc.showDialog(textArea, "Select") == JFileChooser.APPROVE_OPTION) {
+					Llamabrarian.setDirectory(fc.getSelectedFile().toPath());
+
+					// write prefs file
+					try {
+						PrintWriter writer = new PrintWriter(System
+								.getProperty("user.dir")
+								+ File.separator
+								+ "prefs.txt", "UTF-8");
+						writer.println(Llamabrarian.dir.toString());
+						// Any other persistent data should be written here
+						writer.close();
+					} catch (IOException ex) {
+						// Error handling schmerror schmandling
+					}
+				} else {
+					echo("No Selection. Defaulting to previously indicated directory (or working directory).");
+					echo("");
+
+					// write prefs file
+					try {
+						PrintWriter writer = new PrintWriter(System
+								.getProperty("user.dir")
+								+ File.separator
+								+ "prefs.txt", "UTF-8");
+						writer.println(Llamabrarian.dir.toString());
+						// Any other persistent data should be written here
+						writer.close();
+					} catch (IOException ex) {
+						// Error handling schmerror schmandling
+					}
+					Llamabrarian.setDirectory(Paths.get(System
+							.getProperty("user.dir")));
+				}
+				echo("Home directory chosen: " + Llamabrarian.dir + "\n");
+			}
+		});
 		
-		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		fc.setDialogTitle("Directory Chooser");
-		fc.setAcceptAllFileFilterUsed(false);
-		//returnVal = fc.showDialog(textArea, "Select your video library directory");
-		echo("2");
-		if (fc.showDialog(textArea, "Select") == JFileChooser.APPROVE_OPTION) { 
-			System.out.println("getCurrentDirectory(): " + fc.getCurrentDirectory());
-			System.out.println("getSelectedFile() : " + fc.getSelectedFile());
-			//myDir = fc.getSelectedFile().toPath();
-			Llamabrarian.setDirectory(fc.getSelectedFile().toPath());
-			
-			//write prefs file
-			try {
-				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
-				writer.println(Llamabrarian.dir.toString());
-				//Any other persistent data should be written here
-				writer.close();
-			}
-			catch (IOException ex) {
-				//Error handling schmerror schmandling
-			}
-		}
-		else {
-			echo("No Selection. Defaulting to previously indicated directory (or working directory).");
-			echo("");
-			//System.exit(0);//Originally exited here
-			//myDir = Paths.get(System.getProperty("user.dir"));
-			
-			//write prefs file
-			try {
-				PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + File.separator + "prefs.txt", "UTF-8");
-				writer.println(Llamabrarian.dir.toString());
-				//Any other persistent data should be written here
-				writer.close();
-			}
-			catch (IOException ex) {
-				//Error handling schmerror schmandling
-			}
-			Llamabrarian.setDirectory(Paths.get(System.getProperty("user.dir")));
-		}
 	}
-	
-	public static void sysTraySet(Image icon, String altText){
-		//Set the system tray icon
-		
+
+	public static void sysTraySet(Image icon, String altText) {
+		// Set the system tray icon
+
 		if (SystemTray.isSupported()) {
-		    //delete any old trayIcons before altering
-		    tray.remove(trayIcon);
-		    // create a popup menu
-		    PopupMenu popup = new PopupMenu();
-		    
-		    trayIcon = new TrayIcon(icon, altText, popup);
-		    
-		    MenuItem changeDir = new MenuItem("Change Video Folder");
-		    MenuItem showWindow = new MenuItem("Show my IP address");
-		    MenuItem quitMe = new MenuItem("Quit Homeflix Base");
-		    
-		    popup.add(changeDir);
-		    popup.add(showWindow);
-		    popup.add(quitMe);
-		    
-		    try {
-		        tray.add(trayIcon);
-		    } catch (AWTException e) {
-		        System.err.println(e);
-		    }
-		    
-		    changeDir.addActionListener(new ActionListener() {
-	            @Override
+			// delete any old trayIcons before altering
+			tray.remove(trayIcon);
+			// create a popup menu
+			PopupMenu popup = new PopupMenu();
+
+			trayIcon = new TrayIcon(icon, altText, popup);
+
+			MenuItem changeDir = new MenuItem("Change Video Folder");
+			MenuItem showWindow = new MenuItem("Show my IP address");
+			MenuItem quitMe = new MenuItem("Quit Homeflix Base");
+
+			popup.add(changeDir);
+			popup.add(showWindow);
+			popup.add(quitMe);
+
+			try {
+				tray.add(trayIcon);
+			} catch (AWTException e) {
+				System.err.println(e);
+			}
+
+			changeDir.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
-	            	chooseDirectory();
-	            }
-	        });
-		    showWindow.addActionListener(new ActionListener() {
-	            @Override
+					chooseDirectory();
+				}
+			});
+			showWindow.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
-	            	frame.setVisible(true);
-	            	showAddresses();
-	            }
-	        });
-		    quitMe.addActionListener(new ActionListener() {
-	            @Override
+					frame.setVisible(true);
+					showAddresses();
+				}
+			});
+			quitMe.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
-	            	System.exit(0);
-	            }
-	        });
+					System.exit(0);
+				}
+			});
 		}
 	}
 	
-<<<<<<< HEAD
-	public static void directoryConnect(){
-=======
-	private static void directoryConnect(){
->>>>>>> master
-		//Check if the user had previously chosen a library directory;
-		//if not, open a dialog window prompting them to choose one.
-		
-		//Check if preference file exists, use it/create it
-		File prefFile = new File(System.getProperty("user.dir") + File.separator + "prefs.txt");
-		if (prefFile.isFile() && prefFile.canRead()){//if the file exists
-			//Read prefs and use them
+	private static void directoryConnect() {
+		// Check if the user had previously chosen a library directory;
+		// if not, open a dialog window prompting them to choose one.
+
+		// Check if preference file exists, use it/create it
+		File prefFile = new File(System.getProperty("user.dir")
+				+ File.separator + "prefs.txt");
+		if (prefFile.isFile() && prefFile.canRead()) {// if the file exists
+			// Read prefs and use them
 			BufferedReader br = null;
 			try {
-				//Read file
+				// Read file
 				br = new BufferedReader(new FileReader(prefFile));
-				Llamabrarian.setDirectory(Paths.get(br.readLine()));//first line in file will be the user's chosen library path
-				//Any other persistent preferences should be retrieved here, collect them at this point
-			}
-			catch (IOException ex) {
-			    //Error handling?
+				Llamabrarian.setDirectory(Paths.get(br.readLine()));
+				
+				// Any other persistent preferences should be retrieved here,
+				// collect them at this point
+			} catch (IOException ex) {
+				// Error handling?
 			} finally {
 				try {
-					br.close();//close the file
+					br.close();// close the file
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
 			}
-		}
-		else
-		{
-			//Set up file with new preferences
-			//Have user choose directory
+		} else {
+			// Set up file with new preferences
+			// Have user choose directory
 			echo("Unable to find preferences file. Please select your video directory.");
 			echo("");
-			Llamabrarian.setDirectory(Paths.get(System.getProperty("user.dir")));
-			echo("1");
-			//chooseDirectory();
-			chooseDir();
+			Llamabrarian
+					.setDirectory(Paths.get(System.getProperty("user.dir")));
+			chooseDirectory();
 		}
 	}
 }
