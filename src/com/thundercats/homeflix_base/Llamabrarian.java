@@ -26,7 +26,7 @@ public class Llamabrarian implements Runnable {
 	static Connection conn = null;
 	static Statement stmt = null;
 
-	public static Path dir;
+	public static Path dir = null;
 
 	public Llamabrarian() {
 

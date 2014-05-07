@@ -223,10 +223,10 @@ public class HomeflixBase {
 					} catch (IOException ex) {
 						// Error handling schmerror schmandling
 					}
-					Llamabrarian.setDirectory(Paths.get(System
-							.getProperty("user.dir")));
+					if(Llamabrarian.dir == null)
+						Llamabrarian.setDirectory(Paths.get(System.getProperty("user.dir")));
 				}
-				echo("Home directory chosen: " + Llamabrarian.dir + "\n");
+				echo("Library directory: " + Llamabrarian.dir + "\n");
 			}
 		});
 		
