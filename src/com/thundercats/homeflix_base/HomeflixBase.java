@@ -46,9 +46,9 @@ public class HomeflixBase {
 	//Tray Icon prep
 	public static SystemTray tray = SystemTray.getSystemTray();
 	public static TrayIcon trayIcon;
-	public static Image HFicon = new ImageIcon("src/resources/HFiconLR.png").getImage();
-	public static Image HFiconUD = new ImageIcon("src/resources/HFiconUpdateLR.png").getImage();
-	public static Image HFiconPlay = new ImageIcon("src/resources/HFiconPlayingLR.png").getImage();
+	public static Image HFicon = new ImageIcon("resources/HFiconLR.png").getImage();
+	public static Image HFiconUD = new ImageIcon("resources/HFiconUpdateLR.png").getImage();
+	public static Image HFiconPlay = new ImageIcon("resources/HFiconPlayingLR.png").getImage();
 	
 	//File Chooser prep
 	public static int returnVal;
