@@ -24,6 +24,7 @@ public class MediaInfo{
 	//Volatile to allow busy waiting code without being optimized out 
 	private volatile long playbackLength = -2;
 	private String path, filename, videoCodec, audioCodec;
+	private boolean isValid = true;
 	
 	public MediaInfo(String path, String filename){
 		this.path = path;
@@ -61,6 +62,8 @@ public class MediaInfo{
         //Extract the video/audio codecs
         if(!vidTracks.isEmpty())
         	videoCodec = vidTracks.get(0).codecName();
+        else
+        	isValid = false;
         if(!audTracks.isEmpty())
         	audioCodec = audTracks.get(0).codecName();
         
@@ -79,7 +82,7 @@ public class MediaInfo{
     	//Return true if the file is actually a video file, false otherwise
     	
     	//Non-video files will have playbackLength <= 0
-    	return playbackLength > 1000;
+    	return isValid;//playbackLength > 1000;
     }
 
 	public void setLength(long length){
